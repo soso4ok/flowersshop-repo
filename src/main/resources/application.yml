@@ -1,0 +1,13 @@
+server:
+  port: 8083
+
+spring:
+  r2dbc:
+    url: r2dbc:pool:postgres://localhost:5432/FlowersDB
+    username: postgres
+    password: root
+  flyway:
+    url: jdbc:postgresql://localhost:5432/FlowersDB
+    locations: classpath:db/migration
+    user: ${spring.r2dbc.username}
+    password: ${spring.r2dbc.password}
