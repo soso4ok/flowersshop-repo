@@ -1,6 +1,7 @@
 package com.example.flowersproject.security;
 
 import com.example.flowersproject.entity.UserEntity;
+import com.example.flowersproject.exceptions.AuthException;
 import com.example.flowersproject.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -65,17 +66,17 @@ public class SecurityService {
         return userRepository.findByUsername(username)
                 .flatMap(userEntity -> {
                     if (!userEntity.isEnabled()) {
-                        return Mono.error(new RuntimeException(""));
+                        return Mono.error(new AuthException("Account has been disabled", "FLOWERSSHOP_USER_ACCOUNT_DISABLED"));
                     }
                     if (passwordEncoder.matches(password, userEntity.getPassword())) {
-                        return Mono.error(new RuntimeException(""));
+                        return Mono.error(new AuthException("Invalid password or user name", "FLOWERSSHOP_INVALID_PASSWORD_OR_USERNAME"));
                     }
 
                     return Mono.just(generateToken(userEntity).toBuilder()
                             .userId(userEntity.getId())
                             .build());
                 })
-                .switchIfEmpty(Mono.error(new RuntimeException("")));
+                .switchIfEmpty(Mono.error(new AuthException("Invalid password or username", "FLOWERSSHOP_INVALID_PASSWORD_OR_USERNAME")));
     }
 
 }
