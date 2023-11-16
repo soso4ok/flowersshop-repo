@@ -4,12 +4,14 @@ package com.example.flowersproject.security;
 import com.example.flowersproject.entity.UserEntity;
 import com.example.flowersproject.exceptions.UnauthorizedExeption;
 import com.example.flowersproject.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
+@RequiredArgsConstructor
 public class AuthenticationManager implements ReactiveAuthenticationManager {
 
     private UserRepository userRepository;
