@@ -1,24 +1,27 @@
-server:
-  port: 8083
-
 spring:
-  r2dbc:
-    url: r2dbc:pool:postgres://localhost:5432/FlowersDB
-    username: postgres
-    password: root
-  flyway:
+  datasource:
     url: jdbc:postgresql://localhost:5432/FlowersDB
-    locations: classpath:db/migration
-    user: ${spring.r2dbc.username}
-    password: ${spring.r2dbc.password}
+    username: postgres
+    password: asdf
+    driver-class-name: org.postgresql.Driver
+  security:
+    user:
+      name: asdf
+      password: asdf
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-
-jwt:
-  password:
-    encoder:
-      secret: fX89agDCe1aoIZsh0PSjN5THFhxz/wcIho1zmes/SZA=
-      iteration: 64
-      keylenght: 256
-  secret: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY5OTc5MjI0NiwiaWF0IjoxNjk5NzkyMjQ2fQ.Ya53xYXl7VzG7Rq7lWiwi9WAhePs3zak5NfUA72EE9U
-  expiration: 3600
-  issuer: flowersback
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days

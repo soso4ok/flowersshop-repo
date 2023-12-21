@@ -1,11 +1,14 @@
 package com.example.flowersproject.repository;
 
 import com.example.flowersproject.entity.UserEntity;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
-import reactor.core.publisher.Mono;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends R2dbcRepository<UserEntity, Long> {
+import java.util.Optional;
 
-    Mono<UserEntity> findByUsername(String username);
+@Repository
+public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+    Optional<UserEntity> findByEmail(String email);
 
+    boolean existsByEmail(String email);
 }
