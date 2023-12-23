@@ -18,10 +18,6 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final UserServiceImpl userService;
 
-    @GetMapping("/demo")
-    public String getDemo() {
-        return "working";
-    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {

@@ -19,7 +19,7 @@ public class ImageServiceImpl implements ImageService {
 
     private ImageRepository imageRepository;
 
-    private final String uploadPath = "src/main/resources/files";
+    private final String IMAGE_DIRECTORY = "src/main/resources/images";
 
 
 
@@ -30,7 +30,7 @@ public class ImageServiceImpl implements ImageService {
                 + "_" + imageFile.getOriginalFilename();
 
         Files.copy(imageFile.getInputStream(),
-                Paths.get(uploadPath).resolve(fileName),
+                Paths.get(IMAGE_DIRECTORY).resolve(fileName),
                 StandardCopyOption.REPLACE_EXISTING);
 
 
@@ -47,7 +47,7 @@ public class ImageServiceImpl implements ImageService {
         ImageEntity imageEntity = imageRepository.findById(imageId).orElse(null);
 
         if (imageId != null) {
-            Files.deleteIfExists(Paths.get(uploadPath).resolve(imageEntity.getFileName()));
+            Files.deleteIfExists(Paths.get(IMAGE_DIRECTORY).resolve(imageEntity.getFileName()));
             imageRepository.deleteById(imageId);
         }
 

@@ -52,7 +52,6 @@ public class ProductControllers {
     }
 
 
-
     @PutMapping("/{productId}")
     public ResponseEntity<ProductEntity> updateProduct(
             @PathVariable Integer productId,
