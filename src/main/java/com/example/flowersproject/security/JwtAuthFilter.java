@@ -66,6 +66,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private void handleJwtException(HttpServletResponse response, HttpStatus status, String message) throws IOException {
         response.setStatus(status.value());
         response.getWriter().write(message);
-        // You can customize the response format or use ResponseEntity if needed.
     }
 }

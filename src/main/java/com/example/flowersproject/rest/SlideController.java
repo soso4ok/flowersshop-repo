@@ -2,6 +2,7 @@ package com.example.flowersproject.rest;
 
 import com.example.flowersproject.entity.SlideEntity;
 import com.example.flowersproject.services.SlideService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
 @RequestMapping("slides")
 public class SlideController {
 

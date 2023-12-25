@@ -11,3 +11,7 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+        # swagger-ui custom path
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
