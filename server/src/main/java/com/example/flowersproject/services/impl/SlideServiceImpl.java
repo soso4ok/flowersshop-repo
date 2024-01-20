@@ -1,6 +1,6 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.entity.ImageEntity;
+import com.example.flowersproject.entity.products.ImageEntity;
 import com.example.flowersproject.entity.SlideEntity;
 import com.example.flowersproject.repository.SlideRepository;
 import com.example.flowersproject.services.SlideService;

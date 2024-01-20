@@ -1,5 +1,6 @@
 package com.example.flowersproject.entity;
 
+import com.example.flowersproject.entity.products.ImageEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

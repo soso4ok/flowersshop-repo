@@ -1,4 +1,4 @@
-package com.example.flowersproject.entity;
+package com.example.flowersproject.entity.products;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
