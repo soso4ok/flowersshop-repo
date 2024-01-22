@@ -1,6 +1,7 @@
 package com.example.flowersproject.rest;
 
-import com.example.flowersproject.dto.product.FlowerDTO;
+import com.example.flowersproject.dto.product.FlowerRequest;
+import com.example.flowersproject.dto.product.FlowerResponse;
 import com.example.flowersproject.entity.products.ProductEntity;
 import com.example.flowersproject.services.impl.FlowerServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +24,15 @@ public class FlowerController {
     private final FlowerServiceImpl productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductEntity>> getAllFlowers() {
-        List<ProductEntity> list =  productService.getAllFlowers();
+    public ResponseEntity<List<FlowerResponse>> getAllFlowers() {
+        List<FlowerResponse> list =
+                productService.getAllFlowers();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductEntity> getFlowerId(@PathVariable Integer id) {
-        ProductEntity productEntity = productService.getFlowerById(id);
+    public ResponseEntity<FlowerResponse> getFlowerId(@PathVariable Integer id) {
+        FlowerResponse productEntity = productService.getFlowerById(id);
 
         return productEntity != null ?
                 ResponseEntity.ok(productEntity) :
@@ -39,32 +41,43 @@ public class FlowerController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProductEntity> createFlower(
-            @ModelAttribute FlowerDTO flowerDto,
+    public ResponseEntity<FlowerResponse> createFlower(
+            @ModelAttribute FlowerRequest flowerRequest,
             @RequestParam("imageFile") MultipartFile imageFile
     ) {
         try {
-            ProductEntity createdEntity = productService.createFlower(flowerDto, imageFile);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdEntity);
+            FlowerResponse createdResponse =
+                    productService.createFlower(flowerRequest, imageFile);
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(createdResponse);
+
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
     }
 
     @PutMapping("/{flowerId}")
-    public ResponseEntity<ProductEntity> updateFlower(
+    public ResponseEntity<FlowerResponse> updateFlower(
             @PathVariable Integer flowerId,
-            @ModelAttribute FlowerDTO updatedProduct,
+            @ModelAttribute FlowerRequest updatedProduct,
             @RequestParam("imageFile") MultipartFile imageFile
     ) {
         try {
-            ProductEntity updatedEntity = productService.updateFlower(flowerId, updatedProduct, imageFile);
+            FlowerResponse updatedEntity =
+                    productService.updateFlower(flowerId, updatedProduct, imageFile);
 
             return updatedEntity != null ?
                     ResponseEntity.ok(updatedEntity) :
                     ResponseEntity.notFound().build();
+
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
     }
 

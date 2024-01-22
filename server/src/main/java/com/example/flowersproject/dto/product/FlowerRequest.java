@@ -3,7 +3,7 @@ package com.example.flowersproject.dto.product;
 import lombok.Data;
 
 @Data
-public class FlowerDTO {
+public class FlowerRequest {
 
     private String name;
     private String description;

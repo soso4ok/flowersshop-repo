@@ -1,4 +1,4 @@
-    package com.example.flowersproject.entity;
+    package com.example.flowersproject.entity.user;
 
     import com.example.flowersproject.token.Token;
     import jakarta.persistence.*;

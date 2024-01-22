@@ -1,4 +1,4 @@
-package com.example.flowersproject.entity;
+package com.example.flowersproject.entity.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +21,15 @@ public enum UserRole {
 
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         var authorities = getPermissions()
                 .stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
                 .collect(Collectors.toList());
+
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
-        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN")); // Added this line
+        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
         return authorities;
     }
 

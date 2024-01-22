@@ -1,4 +1,4 @@
 package com.example.flowersproject.dto.product;
 
-public class BouquetDTO {
+public class ProductResponse {
 }

@@ -1,6 +1,6 @@
 package com.example.flowersproject.security;
 
-import com.example.flowersproject.entity.UserEntity;
+import com.example.flowersproject.entity.user.UserEntity;
 import com.example.flowersproject.exceptions.AuthenticationException;
 import com.example.flowersproject.dto.AuthenticationRequest;
 import com.example.flowersproject.dto.AuthenticationResponse;

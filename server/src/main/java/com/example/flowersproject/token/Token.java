@@ -1,6 +1,6 @@
 package com.example.flowersproject.token;
 
-import com.example.flowersproject.entity.UserEntity;
+import com.example.flowersproject.entity.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
