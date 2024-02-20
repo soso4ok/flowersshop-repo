@@ -59,7 +59,6 @@ public class SecurityConfig {
                                 .addLogoutHandler(logoutHandler())
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 );
-
         return http.build();
     }
 

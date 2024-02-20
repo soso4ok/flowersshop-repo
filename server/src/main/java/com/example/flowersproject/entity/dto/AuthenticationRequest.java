@@ -1,4 +1,4 @@
-package com.example.flowersproject.dto;
+package com.example.flowersproject.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

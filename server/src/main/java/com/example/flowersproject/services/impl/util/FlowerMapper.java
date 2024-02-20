@@ -1,14 +1,10 @@
 package com.example.flowersproject.services.impl.util;
 
-import com.example.flowersproject.dto.product.FlowerDTO;
+import com.example.flowersproject.entity.dto.product.FlowerDTO;
 import com.example.flowersproject.entity.products.FlowerEntity;
-import com.example.flowersproject.entity.products.ImageEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.Named;
-
-import java.util.Base64;
 
 @Mapper(componentModel = "spring")
 public interface FlowerMapper {
@@ -29,8 +25,5 @@ public interface FlowerMapper {
             @Mapping(source = "available", target = "available"),
     })
     FlowerEntity toEntity(FlowerDTO flowerDto);
-
-
-
 
 }

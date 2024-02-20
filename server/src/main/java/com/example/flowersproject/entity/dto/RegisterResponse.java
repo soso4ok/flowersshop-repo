@@ -1,4 +1,4 @@
-package com.example.flowersproject.dto;
+package com.example.flowersproject.entity.dto;
 
 import com.example.flowersproject.entity.user.UserRole;
 import lombok.AllArgsConstructor;

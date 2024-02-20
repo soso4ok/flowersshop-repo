@@ -1,12 +1,10 @@
 package com.example.flowersproject.rest;
 
-import com.example.flowersproject.dto.product.FlowerDTO;
+import com.example.flowersproject.entity.dto.product.FlowerDTO;
 import com.example.flowersproject.rest.exceptions.ImageNotFoundException;
 import com.example.flowersproject.rest.exceptions.ProductNotFoundException;
 import com.example.flowersproject.services.impl.FlowerServiceImpl;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +37,6 @@ public class FlowerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Flower not found with ID");
         }
-
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})

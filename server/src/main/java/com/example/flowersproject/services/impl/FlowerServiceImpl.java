@@ -1,6 +1,6 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.dto.product.FlowerDTO;
+import com.example.flowersproject.entity.dto.product.FlowerDTO;
 import com.example.flowersproject.entity.products.FlowerEntity;
 import com.example.flowersproject.entity.products.ImageEntity;
 import com.example.flowersproject.repository.FlowerRepository;

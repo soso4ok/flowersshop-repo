@@ -1,8 +1,8 @@
 package com.example.flowersproject.rest.auth;
 
-import com.example.flowersproject.dto.AuthenticationRequest;
-import com.example.flowersproject.dto.AuthenticationResponse;
-import com.example.flowersproject.dto.RegisterRequest;
+import com.example.flowersproject.entity.dto.AuthenticationRequest;
+import com.example.flowersproject.entity.dto.AuthenticationResponse;
+import com.example.flowersproject.entity.dto.RegisterRequest;
 import com.example.flowersproject.security.AuthenticationService;
 import com.example.flowersproject.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;

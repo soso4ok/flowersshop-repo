@@ -1,4 +1,4 @@
-package com.example.flowersproject.dto.product;
+package com.example.flowersproject.entity.dto.product;
 
 import com.example.flowersproject.entity.products.ImageEntity;
 import lombok.Data;

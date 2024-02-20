@@ -1,4 +1,4 @@
-package com.example.flowersproject.dto;
+package com.example.flowersproject.entity.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
