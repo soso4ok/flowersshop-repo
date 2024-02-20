@@ -1,139 +1,133 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.dto.product.FlowerRequest;
-import com.example.flowersproject.dto.product.FlowerResponse;
-import com.example.flowersproject.entity.products.ImageEntity;
+import com.example.flowersproject.dto.product.FlowerDTO;
 import com.example.flowersproject.entity.products.FlowerEntity;
-import com.example.flowersproject.entity.products.ProductEntity;
+import com.example.flowersproject.entity.products.ImageEntity;
 import com.example.flowersproject.repository.FlowerRepository;
+import com.example.flowersproject.repository.ImageRepository;
+import com.example.flowersproject.rest.exceptions.ImageNotFoundException;
+import com.example.flowersproject.rest.exceptions.ProductNotFoundException;
 import com.example.flowersproject.services.FlowerService;
-import com.example.flowersproject.services.util.FlowerUpdater;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.flowersproject.services.impl.util.FlowerMapper;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.flowersproject.services.impl.ImageServiceImpl.IMAGE_DIRECTORY;
+
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class FlowerServiceImpl implements FlowerService {
 
-    @Autowired
-    private FlowerRepository flowerRepository;
+    private final FlowerRepository flowerRepository;
+    private final ImageRepository imageRepository;
+    private final ImageServiceImpl imageService;
+    private final FlowerMapper flowerMapper;
 
-    @Autowired
-    private ImageServiceImpl imageService;
-
-    /**
-     * Retrieves a list of all flowers.
-     *
-     * This method fetches all flower entities from the repository and transforms them
-     * into a list of FlowerResponse objects using the FlowerResponse.fromEntity method.
-     *
-     * @return List of FlowerResponse representing all flowers.
-     */
     @Override
-    public List<FlowerResponse> getAllFlowers() {
-        List<FlowerEntity> flowerEntities = flowerRepository.findAll();
-        return flowerEntities.stream()
-                .map(FlowerResponse::fromEntity)
+    public List<FlowerDTO> getAllFlowers() {
+        return flowerRepository.findAll().stream()
+                .map(flowerEntity -> {
+                    FlowerDTO flowerDTO = flowerMapper.toDto(flowerEntity);
+                    return flowerDTO;
+                })
                 .collect(Collectors.toList());
-    }
+        }
 
-    /**
-     * Retrieves a flower entity by its unique identifier.
-     *
-     * Method queries the flower repository for a flower entity with the specified identifier.
-     * If found, it transforms the entity into a FlowerResponse object using the FlowerResponse.fromEntity method.
-     * If not found, it returns null.
-     *
-     * @param flowerId The unique identifier of the flower.
-     * @return FlowerResponse representing the specified flower, or null if not found.
-     */
     @Override
-    public FlowerResponse getFlowerById(Integer flowerId) {
+    public FlowerDTO getFlowerById(Long flowerId) {
         return flowerRepository.findById(flowerId)
-                .map(FlowerResponse::fromEntity)
-                .orElse(null);
+                .map(flowerMapper::toDto)
+                .orElseThrow(() -> new ProductNotFoundException("Flower not found with this id", String.valueOf(flowerId)));
     }
 
-    /**
-     * Creates a new flower entity with the provided FlowerDto and image file.
-     *
-     * @param flowerRequest FlowerDto containing flower details.
-     * @param imageFile     MultipartFile containing the image file for the flower.
-     * @return ProductEntity representing the newly created flower entity, or null if not created.
-     * @throws IOException if an error occurs during image processing.
-     */
+
     @Override
-    public FlowerResponse createFlower(FlowerRequest flowerRequest,
-                                       MultipartFile imageFile) throws IOException {
+    public FlowerDTO createFlower(FlowerDTO flowerDTO, MultipartFile imageFile) throws IOException {
 
-        if (imageFile != null && !imageFile.isEmpty()){
-
-            ImageEntity imageEntity = imageService.saveImage(imageFile);
-
-            FlowerEntity flowerEntity = new FlowerEntity();
-            FlowerUpdater.updateFields(flowerEntity, flowerRequest, imageEntity);
-
-            // Save the updated entity
-            return FlowerResponse.fromEntity(flowerRepository.save(flowerEntity));
-
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new ImageNotFoundException("Image file is required for flower creation.", imageFile.getName());
         }
+            ImageEntity imageEntity = imageService.uploadImage(imageFile);
+            FlowerEntity flowerEntity = flowerMapper.toEntity(flowerDTO);
 
-        return null;
+            flowerEntity.setImage(imageEntity);
 
+            flowerRepository.save(flowerEntity);
+
+            flowerDTO.setImage(imageEntity);
+            return flowerDTO;
     }
 
-    /**
-     * Updates an existing flower entity with the provided FlowerDto and image file.
-     *
-     * @param flowerId    The unique identifier of the flower to be updated.
-     * @param flowerRequest   FlowerDto containing updated flower details.
-     * @param imageFile   MultipartFile containing the updated image file for the flower.
-     * @return ProductEntity representing the updated flower entity, or null if not found.
-     * @throws IOException if an error occurs during image processing.
-     */
     @Override
-    public FlowerResponse updateFlower(Integer flowerId,
-                                      FlowerRequest flowerRequest,
-                                      MultipartFile imageFile) throws IOException {
+    public FlowerDTO updateFlower(Long flowerId,
+                                  FlowerDTO flowerDTO,
+                                  MultipartFile imageFile) throws IOException {
 
-        FlowerEntity flowerEntity =
-                flowerRepository.findById(flowerId)
-                                .orElse(null);
-
-        if (flowerEntity == null) {
-            return null; // Return null if the entity is not found
+        if (flowerId == null || flowerId <= 0) {
+            throw new IllegalArgumentException("Invalid flowerId");
         }
+
+        FlowerEntity flowerEntity = flowerRepository.findById(flowerId)
+                .orElseThrow(() -> new EntityNotFoundException("Flower not found for id: " + flowerId));
+
 
         if (imageFile != null && !imageFile.isEmpty()) {
-            ImageEntity imageEntity = imageService.saveImage(imageFile);
+            ImageEntity oldImage = flowerEntity.getImage();
+            Path imagePath = Paths.get(IMAGE_DIRECTORY).resolve(oldImage.getFileName().toString());
+            try {
+                Files.delete(Paths.get(imagePath.toUri()));
+                imageRepository.delete(oldImage);
+            } catch (IOException e) {
 
-            // Update the fields
-            FlowerUpdater.updateFields(flowerEntity, flowerRequest, imageEntity);
+            }
 
-            // Save the updated entity
-            return FlowerResponse.fromEntity(flowerRepository.save(flowerEntity));
+            ImageEntity newImage = imageService.uploadImage(imageFile);
+
+            flowerEntity.setImage(newImage);
+
+            flowerRepository.save(flowerEntity);
+
+            return flowerMapper.toDto(flowerEntity);
         }
 
         return null;
 
     }
 
-    /**
-     * Deletes a flower entity by its unique identifier.
-     *
-     * @param flowerId The unique identifier of the flower to be deleted.
-     */
     @Override
-    public void deleteFlower(Integer flowerId) {
-        flowerRepository.deleteById(flowerId);
-    }
+    public ResponseEntity<?> deleteFlower(Long flowerId) {
+        try {
+            if (flowerId == null || flowerId <= 0) {
+                throw new IllegalArgumentException("Invalid flowerId");
+            }
 
+            FlowerEntity flowerEntity = flowerRepository.findById(flowerId)
+                    .orElseThrow(() -> new EntityNotFoundException("Flower not found for id: " + flowerId));
+
+            ImageEntity image = flowerEntity.getImage();
+            try {
+                Files.deleteIfExists(Paths.get(IMAGE_DIRECTORY).resolve(image.getFileName()));
+                imageRepository.delete(image);
+            } catch (IOException e) {
+                throw new ProductNotFoundException("Error deleting image for flower: ", e.getMessage());
+            }
+
+            flowerRepository.deleteById(flowerId);
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
+            throw new ProductNotFoundException("Error deleting flower: ", e.getMessage());
+        }
+        return null;
+    }
 
 
 }

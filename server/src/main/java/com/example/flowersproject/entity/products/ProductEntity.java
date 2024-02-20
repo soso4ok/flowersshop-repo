@@ -21,8 +21,8 @@ public abstract class ProductEntity {
     private String price;
     private String available;
 
-    @OneToOne
-    @PrimaryKeyJoinColumn(name = "image_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "imageId")
     private ImageEntity image;
 
 }

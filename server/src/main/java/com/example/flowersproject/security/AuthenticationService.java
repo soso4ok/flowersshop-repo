@@ -1,10 +1,10 @@
 package com.example.flowersproject.security;
 
-import com.example.flowersproject.entity.user.UserEntity;
-import com.example.flowersproject.exceptions.AuthenticationException;
 import com.example.flowersproject.dto.AuthenticationRequest;
 import com.example.flowersproject.dto.AuthenticationResponse;
 import com.example.flowersproject.dto.RegisterRequest;
+import com.example.flowersproject.entity.user.UserEntity;
+import com.example.flowersproject.security.exceptions.AuthenticationException;
 import com.example.flowersproject.repository.UserRepository;
 import com.example.flowersproject.token.Token;
 import com.example.flowersproject.token.TokenRepository;
@@ -12,6 +12,7 @@ import com.example.flowersproject.token.TokenType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
 
+    @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
 
             var user = UserEntity.builder()
@@ -42,8 +44,10 @@ public class AuthenticationService {
                     .accessToken(jwtToken)
                     .refreshToken(refreshToken)
                     .build();
+
     }
 
+    @Transactional
     public AuthenticationResponse authenticationResponse(AuthenticationRequest request) {
 
         try {

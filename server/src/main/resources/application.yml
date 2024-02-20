@@ -1,4 +1,5 @@
 
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/flowersdb
@@ -30,3 +31,5 @@ application:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+server:
+  port: 8083

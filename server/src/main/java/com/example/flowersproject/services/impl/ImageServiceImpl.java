@@ -1,14 +1,20 @@
 package com.example.flowersproject.services.impl;
 
 import com.example.flowersproject.entity.products.ImageEntity;
+import com.example.flowersproject.rest.exceptions.ImageNotFoundException;
 import com.example.flowersproject.repository.ImageRepository;
 import com.example.flowersproject.services.ImageService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
@@ -17,39 +23,44 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
+
     private ImageRepository imageRepository;
+    public static String IMAGE_DIRECTORY = "src/main/resources/images";
 
-    private final String IMAGE_DIRECTORY = "src/main/resources/images";
+    public ImageEntity uploadImage(MultipartFile file) throws IOException {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
+        String uniqueFileName = UUID.randomUUID() + "." + FilenameUtils.getExtension(fileName);
 
+        Files.createDirectories(Paths.get(IMAGE_DIRECTORY));
 
-    @Override
-    public ImageEntity saveImage(MultipartFile imageFile) throws IOException {
+        Path imagePath = Paths.get(IMAGE_DIRECTORY, uniqueFileName);
+        Files.copy(file.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
 
-        String fileName = UUID.randomUUID()
-                + "_" + imageFile.getOriginalFilename();
-
-        Files.copy(imageFile.getInputStream(),
-                Paths.get(IMAGE_DIRECTORY).resolve(fileName),
-                StandardCopyOption.REPLACE_EXISTING);
-
-
-        ImageEntity imageEntity = new ImageEntity();
-        imageEntity.setFileName(fileName);
-
-        return imageRepository.save(imageEntity);
-
+        ImageEntity image = new ImageEntity();
+        image.setFileName(uniqueFileName);
+        return imageRepository.save(image);
     }
 
-    @Override
-    public void deleteImage(Long imageId) throws IOException {
+    public Resource downloadImage(Integer imageId) throws IOException {
+        ImageEntity image = imageRepository.findById(imageId)
+                .orElseThrow(() -> new FileNotFoundException("Image not found"));
+        Path imagePath = Paths.get(IMAGE_DIRECTORY).resolve(image.getFileName());
+        Resource resource = new UrlResource(imagePath.toUri());
 
-        ImageEntity imageEntity = imageRepository.findById(imageId).orElse(null);
-
-        if (imageId != null) {
-            Files.deleteIfExists(Paths.get(IMAGE_DIRECTORY).resolve(imageEntity.getFileName()));
-            imageRepository.deleteById(imageId);
+        if (!resource.exists() || !resource.isReadable()) {
+            throw new FileNotFoundException("Image not found or cannot be read");
         }
 
+        return resource;
     }
+
+    public byte[] getImageFromRepository(int id) throws IOException {
+        ImageEntity image = imageRepository.findById(id)
+                .orElseThrow(() -> new ImageNotFoundException("Image not found with id: ", String.valueOf(id)));
+        Path imagePath = Paths.get(IMAGE_DIRECTORY, image.getFileName());
+        byte[] imageData = Files.readAllBytes(imagePath);
+        return imageData;
+    }
+
 }

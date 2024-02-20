@@ -1,4 +1,4 @@
-package com.example.flowersproject.rest;
+package com.example.flowersproject.rest.auth;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package com.example.flowersproject.exceptions;
+package com.example.flowersproject.security.exceptions;
 
 public class JwtSignatureException extends RuntimeException{
 

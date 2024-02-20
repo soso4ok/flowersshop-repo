@@ -1,4 +1,4 @@
-package com.example.flowersproject.exceptions;
+package com.example.flowersproject.rest.exceptions;
 
 
 import lombok.Getter;

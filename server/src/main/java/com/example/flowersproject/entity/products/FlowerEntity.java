@@ -13,7 +13,5 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table(name = "flower_table")
 public class FlowerEntity extends ProductEntity {
 
-    public FlowerEntity(String name, String description, String price, String available, ImageEntity imageEntity) {
 
-    }
 }
