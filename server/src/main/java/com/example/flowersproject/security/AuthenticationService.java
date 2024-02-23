@@ -4,7 +4,7 @@ import com.example.flowersproject.entity.dto.AuthenticationRequest;
 import com.example.flowersproject.entity.dto.AuthenticationResponse;
 import com.example.flowersproject.entity.dto.RegisterRequest;
 import com.example.flowersproject.entity.user.UserEntity;
-import com.example.flowersproject.security.exceptions.AuthenticationException;
+import com.example.flowersproject.exceptions.AuthenticationException;
 import com.example.flowersproject.repository.UserRepository;
 import com.example.flowersproject.token.Token;
 import com.example.flowersproject.token.TokenRepository;

@@ -11,8 +11,8 @@ public interface FlowerService {
 
     public List<FlowerDTO> getAllFlowers();
     public FlowerDTO getFlowerById(Long flowerId);
-    public FlowerDTO createFlower(FlowerDTO flowerDTO, MultipartFile imageFile) throws IOException;
+    public ResponseEntity<?> createFlower(FlowerDTO flowerDTO, MultipartFile imageFile) throws IOException;
     public ResponseEntity<?> deleteFlower(Long flowerId);
-    public FlowerDTO updateFlower(Long flowerId, FlowerDTO flowerDTO, MultipartFile imageFile) throws IOException ;
+    public ResponseEntity<?> updateFlower(Long flowerId, FlowerDTO flowerDTO, MultipartFile imageFile) throws IOException ;
 
 }

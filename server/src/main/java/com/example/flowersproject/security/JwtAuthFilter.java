@@ -1,6 +1,6 @@
 package com.example.flowersproject.security;
 
-import com.example.flowersproject.security.exceptions.JwtSignatureException;
+import com.example.flowersproject.exceptions.JwtSignatureException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

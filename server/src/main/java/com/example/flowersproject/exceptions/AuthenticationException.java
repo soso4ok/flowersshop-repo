@@ -1,6 +1,4 @@
-package com.example.flowersproject.security.exceptions;
-
-import com.example.flowersproject.rest.exceptions.ApiException;
+package com.example.flowersproject.exceptions;
 
 public class AuthenticationException extends ApiException {
     public AuthenticationException(String message, String errorCode) {

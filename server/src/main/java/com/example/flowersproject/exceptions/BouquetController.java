@@ -1,8 +1,6 @@
-package com.example.flowersproject.rest;
+package com.example.flowersproject.exceptions;
 
 import com.example.flowersproject.entity.dto.product.BouquetDTO;
-import com.example.flowersproject.rest.exceptions.ImageNotFoundException;
-import com.example.flowersproject.rest.exceptions.ProductNotFoundException;
 import com.example.flowersproject.services.impl.BouquetServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -47,16 +45,9 @@ public class BouquetController {
     public ResponseEntity<?> createBouquet(
             @RequestPart("bouquetRequest") BouquetDTO bouquetDTO,
             @RequestPart("imageFile") MultipartFile imageFile
-    ) {
-        System.out.println(bouquetDTO);
-        try {
-            BouquetDTO createdResponse = bouquetService.createBouquet(bouquetDTO, imageFile);
+    ) throws IOException {
+        var createdResponse = bouquetService.createBouquet(bouquetDTO, imageFile);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdResponse);
-        } catch (ImageNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
     }
 
     @PutMapping("/{id}")
@@ -66,7 +57,7 @@ public class BouquetController {
             @RequestParam("imageFile") MultipartFile imageFile
     ) {
         try {
-            BouquetDTO updatedEntity = bouquetService.updateBouquet(id, updatedProduct, imageFile);
+            var updatedEntity = bouquetService.updateBouquet(id, updatedProduct, imageFile);
             return updatedEntity != null ?
                     ResponseEntity.ok(updatedEntity) :
                     ResponseEntity.notFound().build();

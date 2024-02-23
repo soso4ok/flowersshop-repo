@@ -15,8 +15,8 @@ public interface BouquetService {
 
     public List<BouquetDTO> getAllBouquets();
     public BouquetDTO getBouquetById(Long bouquetId);
-    public BouquetDTO createBouquet(BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException;
+    public ResponseEntity<?>  createBouquet(BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException;
     public ResponseEntity<?> deleteBouquet(Long bouquetId);
-    public BouquetDTO updateBouquet(Long bouquetId, BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException;
+    public ResponseEntity<?>  updateBouquet(Long bouquetId, BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException;
 
 }

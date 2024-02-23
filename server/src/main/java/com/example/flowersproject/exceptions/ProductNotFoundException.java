@@ -1,4 +1,4 @@
-package com.example.flowersproject.rest.exceptions;
+package com.example.flowersproject.exceptions;
 
 public class ProductNotFoundException extends ApiException{
 

@@ -1,6 +1,5 @@
-package com.example.flowersproject.security.exceptions;
+package com.example.flowersproject.exceptions;
 
-import com.example.flowersproject.rest.exceptions.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

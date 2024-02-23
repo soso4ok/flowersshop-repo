@@ -1,4 +1,4 @@
-package com.example.flowersproject.rest.exceptions;
+package com.example.flowersproject.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

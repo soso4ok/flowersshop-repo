@@ -1,6 +1,4 @@
-package com.example.flowersproject.rest.exceptions;
-
-import com.example.flowersproject.rest.exceptions.ApiException;
+package com.example.flowersproject.exceptions;
 
 public class ImageNotFoundException extends ApiException {
 

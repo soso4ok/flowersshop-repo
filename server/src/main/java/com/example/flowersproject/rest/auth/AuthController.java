@@ -24,15 +24,12 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
             if (userService.userAlreadyExists(request.getEmail())) {
-                // return 409 Conflict
-                return new ResponseEntity<>("USER_EXISTS", HttpStatus.CONFLICT);
+                return new ResponseEntity<>("User exists", HttpStatus.CONFLICT);
             }
             return ResponseEntity.ok(authenticationService.register(request));
         } catch (DataIntegrityViolationException e) {
-            // Specific database constraint violation
             return new ResponseEntity<>("Email address is already in use", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            // Other exceptions
             return new ResponseEntity<>("Unexpected error during registration/authentication", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

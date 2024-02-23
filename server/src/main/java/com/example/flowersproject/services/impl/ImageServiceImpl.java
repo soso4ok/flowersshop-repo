@@ -1,7 +1,7 @@
 package com.example.flowersproject.services.impl;
 
 import com.example.flowersproject.entity.products.ImageEntity;
-import com.example.flowersproject.rest.exceptions.ImageNotFoundException;
+import com.example.flowersproject.exceptions.ImageNotFoundException;
 import com.example.flowersproject.repository.ImageRepository;
 import com.example.flowersproject.services.ImageService;
 import lombok.AllArgsConstructor;
