@@ -1,6 +1,6 @@
 package com.example.flowersproject.rest;
 
-import com.example.flowersproject.entity.dto.product.FlowerDTO;
+import com.example.flowersproject.entity.dto.FlowerDTO;
 import com.example.flowersproject.services.impl.FlowerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,15 +20,14 @@ public class FlowerController {
     private final FlowerServiceImpl flowerService;
 
     @GetMapping
-    public ResponseEntity<List<FlowerDTO>> getAllFlowers() {
-        List<FlowerDTO> list =
-                flowerService.getAllFlowers();
+    public ResponseEntity<?> getAllFlowers() {
+        var list = flowerService.getAllFlowers();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getFlowerById(@PathVariable("id") Long id) {
-            FlowerDTO productEntity =
+            var productEntity =
                     flowerService.getFlowerById(id);
             return ResponseEntity.ok(productEntity);
     }

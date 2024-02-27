@@ -1,11 +1,12 @@
-package com.example.flowersproject.security;
+package com.example.flowersproject.services.impl;
 
 import com.example.flowersproject.entity.dto.AuthenticationRequest;
 import com.example.flowersproject.entity.dto.AuthenticationResponse;
-import com.example.flowersproject.entity.dto.RegisterRequest;
+import com.example.flowersproject.entity.dto.UserDTO;
 import com.example.flowersproject.entity.user.UserEntity;
 import com.example.flowersproject.exceptions.AuthenticationException;
 import com.example.flowersproject.repository.UserRepository;
+import com.example.flowersproject.security.JwtService;
 import com.example.flowersproject.token.Token;
 import com.example.flowersproject.token.TokenRepository;
 import com.example.flowersproject.token.TokenType;
@@ -24,7 +25,7 @@ public class AuthenticationService {
     private final TokenRepository tokenRepository;
 
     @Transactional
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(UserDTO request) {
 
             var user = UserEntity.builder()
                     .firstname(request.getFirstname())

@@ -1,10 +1,9 @@
-package com.example.flowersproject.entity.dto.product;
+package com.example.flowersproject.entity.dto;
 
-import com.example.flowersproject.entity.products.FlowerEntity;
-import com.example.flowersproject.entity.products.ImageEntity;
+import com.example.flowersproject.entity.product.ImageEntity;
 import lombok.Data;
 
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -13,7 +12,8 @@ public class BouquetDTO {
     private Long id;
     private String name;
     private String description;
-    private String price;
+    private double price;
+    private String count;
     private String available;
     private ImageEntity image;
     private Set<Long> flowerIds;

@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,13 +22,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    @Autowired
     private JwtService jwtService;
 
-    @Autowired
     private UserDetailsService userDetailsService;
 
     @Override
@@ -54,10 +54,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
 
+        } catch (UsernameNotFoundException e) {
+            handleJwtException(response, HttpStatus.NOT_FOUND, "User not found with this email");
+            return;
         } catch (JwtSignatureException e) {
             handleJwtException(response, HttpStatus.UNAUTHORIZED, "JWT signature verification failed");
+            return;
         } catch (JwtException e) {
             handleJwtException(response, HttpStatus.UNAUTHORIZED, "Error parsing JWT");
+            return;
         }
 
         filterChain.doFilter(request, response);

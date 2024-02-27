@@ -1,8 +1,10 @@
-package com.example.flowersproject.entity.products;
+package com.example.flowersproject.entity.product;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.math.BigDecimal;
 
 
 @Entity
@@ -11,14 +13,15 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @Table(name = "product_table")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class ProductEntity {
+public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String description;
-    private String price;
+    private double price;
+    private String count;
     private String available;
 
     @OneToOne(cascade = CascadeType.ALL)

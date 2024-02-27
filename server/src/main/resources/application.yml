@@ -2,7 +2,7 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/flowersdb
+    url: jdbc:postgresql://localhost:5432/FlowersDB
     username: postgres
     password: asdf
     driver-class-name: org.postgresql.Driver

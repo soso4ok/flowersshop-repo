@@ -1,8 +1,8 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.entity.dto.product.FlowerDTO;
-import com.example.flowersproject.entity.products.FlowerEntity;
-import com.example.flowersproject.entity.products.ImageEntity;
+import com.example.flowersproject.entity.dto.FlowerDTO;
+import com.example.flowersproject.entity.product.FlowerEntity;
+import com.example.flowersproject.entity.product.ImageEntity;
 import com.example.flowersproject.repository.FlowerRepository;
 import com.example.flowersproject.repository.ImageRepository;
 import com.example.flowersproject.exceptions.ProductNotFoundException;
@@ -37,26 +37,30 @@ public class FlowerServiceImpl implements FlowerService {
     private final FlowerMapper flowerMapper;
 
     @Override
-    public List<FlowerDTO> getAllFlowers() {
-        return flowerRepository.findAll().stream()
+    public ResponseEntity<List<FlowerDTO>> getAllFlowers() {
+        List<FlowerDTO> flowerDTOs =  flowerRepository.findAll().stream()
                 .map(flowerEntity -> {
-                    FlowerDTO flowerDTO = flowerMapper.toDto(flowerEntity);
+                    FlowerDTO flowerDTO = flowerMapper.flowerToDto(flowerEntity);
                     return flowerDTO;
                 })
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(flowerDTOs);
         }
 
     @Override
-    public FlowerDTO getFlowerById(Long flowerId) {
-        return flowerRepository.findById(flowerId)
-                .map(flowerMapper::toDto)
-                .orElseThrow(() -> new ProductNotFoundException("Flower not found with this id", String.valueOf(flowerId)));
+    public ResponseEntity<?> getFlowerById(Long orderId) {
+        return flowerRepository.findById(orderId)
+                .map(flowerMapper::flowerToDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
 
     @Override
-    public ResponseEntity<?> createFlower(FlowerDTO flowerDTO, MultipartFile imageFile) {
-        if (!userHasPermissionToDoRequest()) {
+    public ResponseEntity<?> createFlower(FlowerDTO flowerDTO,
+                                          MultipartFile imageFile) {
+
+        if (userHasPermissionToDoRequest()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to create a flower.");
         }
 
@@ -66,7 +70,7 @@ public class FlowerServiceImpl implements FlowerService {
 
         try {
             ImageEntity imageEntity = imageService.uploadImage(imageFile);
-            FlowerEntity flowerEntity = flowerMapper.toEntity(flowerDTO);
+            FlowerEntity flowerEntity = flowerMapper.flowerToEntity(flowerDTO);
             flowerEntity.setImage(imageEntity);
 
             flowerRepository.save(flowerEntity);
@@ -80,13 +84,15 @@ public class FlowerServiceImpl implements FlowerService {
 
 
     @Override
-    public ResponseEntity<?> updateFlower(Long flowerId, FlowerDTO flowerDTO, MultipartFile imageFile) throws IOException {
+    public ResponseEntity<?> updateFlower(Long flowerId,
+                                          FlowerDTO flowerDTO,
+                                          MultipartFile imageFile) throws IOException {
+
         if (flowerId == null || flowerId <= 0) {
             return ResponseEntity.badRequest().body("Invalid flowerId");
         }
-
-        if (!userHasPermissionToDoRequest()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to update flower");
+        if (userHasPermissionToDoRequest()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to create a flower.");
         }
 
         FlowerEntity flowerEntity = flowerRepository.findById(flowerId)
@@ -108,17 +114,17 @@ public class FlowerServiceImpl implements FlowerService {
 
         flowerRepository.save(flowerEntity);
 
-        return ResponseEntity.ok(flowerMapper.toDto(flowerEntity));
+        return ResponseEntity.ok(flowerMapper.flowerToDto(flowerEntity));
     }
 
 
     @Override
     public ResponseEntity<?> deleteFlower(Long flowerId) {
+
         if (flowerId == null || flowerId <= 0) {
             return ResponseEntity.badRequest().body("Invalid flowerId");
         }
-
-        if (!userHasPermissionToDoRequest()) {
+        if (userHasPermissionToDoRequest()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this flower");
         }
 

@@ -1,6 +1,6 @@
 package com.example.flowersproject.repository;
 
-import com.example.flowersproject.entity.products.FlowerEntity;
+import com.example.flowersproject.entity.product.FlowerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

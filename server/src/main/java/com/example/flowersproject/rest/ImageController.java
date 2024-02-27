@@ -22,7 +22,7 @@ public class ImageController {
     public final ImageServiceImpl imageService;
 
     @GetMapping(value = "/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") Long id) {
         try {
             byte[] imageData = imageService.getImageFromRepository(id);
             return ResponseEntity.ok()

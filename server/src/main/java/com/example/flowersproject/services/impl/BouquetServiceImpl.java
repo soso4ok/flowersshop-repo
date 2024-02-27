@@ -1,8 +1,8 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.entity.dto.product.BouquetDTO;
-import com.example.flowersproject.entity.products.BouquetEntity;
-import com.example.flowersproject.entity.products.ImageEntity;
+import com.example.flowersproject.entity.dto.BouquetDTO;
+import com.example.flowersproject.entity.product.BouquetEntity;
+import com.example.flowersproject.entity.product.ImageEntity;
 import com.example.flowersproject.repository.BouquetRepository;
 import com.example.flowersproject.repository.ImageRepository;
 import com.example.flowersproject.exceptions.ProductNotFoundException;
@@ -12,6 +12,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,11 +52,17 @@ public class BouquetServiceImpl implements BouquetService {
     }
 
     @Override
-    public ResponseEntity<?>  createBouquet(BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException {
-        if (imageFile == null || imageFile.isEmpty()) {
-            return ResponseEntity.badRequest().body("Image file is required for bouquet creation");
-        }
+    public ResponseEntity<?> createBouquet(BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException {
+
         try {
+
+            if (imageFile == null || imageFile.isEmpty()) {
+                return ResponseEntity.badRequest().body("Image file is required for bouquet creation");
+            }
+            if (userHasPermissionToDoRequest()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this flower");
+            }
+
             ImageEntity imageEntity = imageService
                     .uploadImage(imageFile);
 
@@ -73,10 +82,16 @@ public class BouquetServiceImpl implements BouquetService {
     }
 
     @Override
-    public ResponseEntity<?>  updateBouquet(Long bouquetId,
-                                            BouquetDTO bouquetDTO,
-                                            MultipartFile imageFile) throws IOException {
+    public ResponseEntity<?> updateBouquet(Long bouquetId,
+                                           BouquetDTO bouquetDTO,
+                                           MultipartFile imageFile) throws IOException {
+
+        if (userHasPermissionToDoRequest()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this flower");
+        }
+
         try {
+
             BouquetEntity bouquetEntity = bouquetRepository.findById(bouquetId)
                     .orElseThrow(() -> new EntityNotFoundException("Bouquet not found for id: " + bouquetId));
 
@@ -108,10 +123,15 @@ public class BouquetServiceImpl implements BouquetService {
 
     @Override
     public ResponseEntity<?> deleteBouquet(Long bouquetId) {
+
+        if (bouquetId == null || bouquetId <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid bouquetId");
+        }
+        if (userHasPermissionToDoRequest()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this flower");
+        }
+
         try {
-            if (bouquetId == null || bouquetId <= 0) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid bouquetId");
-            }
 
             BouquetEntity flowerEntity = bouquetRepository.findById(bouquetId)
                     .orElseThrow(() -> new EntityNotFoundException("Bouquet not found for id: " + bouquetId));
@@ -131,5 +151,8 @@ public class BouquetServiceImpl implements BouquetService {
         return null;
     }
 
-
+    private boolean userHasPermissionToDoRequest() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+    }
 }

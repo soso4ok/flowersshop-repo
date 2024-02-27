@@ -2,13 +2,14 @@ package com.example.flowersproject.rest.auth;
 
 import com.example.flowersproject.entity.dto.AuthenticationRequest;
 import com.example.flowersproject.entity.dto.AuthenticationResponse;
-import com.example.flowersproject.entity.dto.RegisterRequest;
-import com.example.flowersproject.security.AuthenticationService;
+import com.example.flowersproject.entity.dto.UserDTO;
+import com.example.flowersproject.services.impl.AuthenticationService;
 import com.example.flowersproject.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,8 +21,13 @@ public class AuthController {
     private final UserServiceImpl userService;
 
 
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    }
+
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@RequestBody UserDTO request) {
         try {
             if (userService.userAlreadyExists(request.getEmail())) {
                 return new ResponseEntity<>("User exists", HttpStatus.CONFLICT);

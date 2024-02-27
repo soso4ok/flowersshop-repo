@@ -1,6 +1,6 @@
 package com.example.flowersproject.exceptions;
 
-import com.example.flowersproject.entity.dto.product.BouquetDTO;
+import com.example.flowersproject.entity.dto.BouquetDTO;
 import com.example.flowersproject.services.impl.BouquetServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

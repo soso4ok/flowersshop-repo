@@ -1,10 +1,6 @@
 package com.example.flowersproject.services;
 
-import com.example.flowersproject.entity.dto.product.BouquetDTO;
-import com.example.flowersproject.entity.dto.product.FlowerDTO;
-import com.example.flowersproject.entity.products.BouquetEntity;
-import com.example.flowersproject.entity.products.FlowerEntity;
-import com.example.flowersproject.repository.BouquetRepository;
+import com.example.flowersproject.entity.dto.BouquetDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 

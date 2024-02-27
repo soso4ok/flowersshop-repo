@@ -1,4 +1,4 @@
-package com.example.flowersproject.entity.products;
+package com.example.flowersproject.entity.product;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

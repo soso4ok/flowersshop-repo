@@ -1,6 +1,6 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.entity.products.ImageEntity;
+import com.example.flowersproject.entity.product.ImageEntity;
 import com.example.flowersproject.exceptions.ImageNotFoundException;
 import com.example.flowersproject.repository.ImageRepository;
 import com.example.flowersproject.services.ImageService;
@@ -42,7 +42,7 @@ public class ImageServiceImpl implements ImageService {
         return imageRepository.save(image);
     }
 
-    public Resource downloadImage(Integer imageId) throws IOException {
+    public Resource downloadImage(Long imageId) throws IOException {
         ImageEntity image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new FileNotFoundException("Image not found"));
         Path imagePath = Paths.get(IMAGE_DIRECTORY).resolve(image.getFileName());
@@ -55,7 +55,7 @@ public class ImageServiceImpl implements ImageService {
         return resource;
     }
 
-    public byte[] getImageFromRepository(int id) throws IOException {
+    public byte[] getImageFromRepository(Long id) throws IOException {
         ImageEntity image = imageRepository.findById(id)
                 .orElseThrow(() -> new ImageNotFoundException("Image not found with id: ", String.valueOf(id)));
         Path imagePath = Paths.get(IMAGE_DIRECTORY, image.getFileName());
