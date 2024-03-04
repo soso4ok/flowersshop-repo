@@ -4,6 +4,7 @@ import com.example.flowersproject.entity.dto.OrderDTO;
 import com.example.flowersproject.entity.dto.ProductDTO;
 import com.example.flowersproject.entity.dto.UserDTO;
 import com.example.flowersproject.entity.order.OrderEntity;
+import com.example.flowersproject.entity.order.OrderItemEntity;
 import com.example.flowersproject.entity.order.OrderStatusEntity;
 import com.example.flowersproject.repository.OrderRepository;
 import com.example.flowersproject.services.OrderService;
@@ -19,8 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 
+import javax.naming.NameNotFoundException;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -39,10 +42,10 @@ public class OrderServiceImpl implements OrderService {
             OrderEntity orderEntity = new OrderEntity();
 
             orderEntity.setUser(userMapper.userDtoToEntity(user));
-
             orderEntity.setOrderDate(new Date());
 
-            orderEntity.setOrderItems(orderMapper.mapProductEntitiesToOrderItems(orderEntity, products));
+            List<OrderItemEntity> orderItems = orderMapper.mapProductEntitiesToOrderItems(orderEntity, products);
+            orderEntity.setOrderItems(orderItems);
 
             orderEntity.setOrderStatus(OrderStatusEntity.IN_PROCESS);
 
@@ -59,32 +62,49 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-
     @Override
-    public ResponseEntity<?> getOrderById(Long orderId) {
-return null;
+    public ResponseEntity<?> updateOrder(Long orderId, OrderDTO order) {
+        try {
+
+            Optional<OrderEntity> optionalOrder = orderRepository.findById(orderId);
+
+            if (optionalOrder.isPresent()) {
+                OrderEntity existingOrder = optionalOrder.get();
+
+                existingOrder.setUser(userMapper.userDtoToEntity(order.getUser()));
+                existingOrder.setOrderDate(order.getOrderDate());
+                existingOrder.setOrderStatus(OrderStatusEntity.valueOf(order.getOrderStatus()));
+                existingOrder.setTotalPrice(order.getTotalPrice());
+
+                OrderEntity updatedOrder = orderRepository.save(existingOrder);
+
+                OrderDTO updatedOrderDTO = orderMapper.orderToDto(updatedOrder);
+
+                return ResponseEntity.ok(updatedOrderDTO);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update order: " + e.getMessage());
+        }
     }
 
     @Override
-    public ResponseEntity<?> updateOrder(OrderDTO order) {
-        return null;
-    }
+    public ResponseEntity<?> deleteOrderById(Long orderId) {
+        if (!orderRepository.existsById(orderId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Order with ID " + orderId + " not found");
+        }
+        orderRepository.deleteById(orderId);
 
-    @Override
-    public void deleteOrderById(Long orderId) {
-
+        return ResponseEntity.ok("Order with ID " + orderId + " deleted successfully");
     }
 
     @Override
     public ResponseEntity<?> getOrdersForUser(UserDTO user) {
         return null;
     }
-
-    @Override
-    public ResponseEntity<?> getAllOrders() {
-        return null;
-    }
-
 
     @Override
     public ResponseEntity<?> checkOrderStatus(OrderDTO order) {
@@ -99,5 +119,27 @@ return null;
     @Override
     public void markOrderAsDelivered(OrderDTO order) {
 
+    }
+
+    @Override
+    public ResponseEntity<?> getOrderById(Long orderId) {
+        try {
+            Optional<OrderEntity> optionalOrder = orderRepository.findById(orderId);
+
+            if (optionalOrder.isPresent()) {
+                OrderDTO orderDTO = orderMapper.orderToDto(optionalOrder.get());
+                return ResponseEntity.ok(orderDTO);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to retrieve order: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getAllOrders() {
+        return null;
     }
 }

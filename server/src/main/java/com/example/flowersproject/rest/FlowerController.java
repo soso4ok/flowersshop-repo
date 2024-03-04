@@ -44,7 +44,7 @@ public class FlowerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateFlower(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @ModelAttribute FlowerDTO updatedProduct,
             @RequestParam("imageFile") MultipartFile imageFile
     ) throws IOException {

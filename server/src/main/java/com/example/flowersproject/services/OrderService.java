@@ -10,8 +10,8 @@ import java.util.List;
 public interface OrderService {
     ResponseEntity<?> createOrder(UserDTO user, List<ProductDTO> products);
     ResponseEntity<?> getOrderById(Long orderId);
-    ResponseEntity<?> updateOrder(OrderDTO order);
-    void deleteOrderById(Long orderId);
+    ResponseEntity<?> updateOrder( Long orderId, OrderDTO order);
+    ResponseEntity<?> deleteOrderById(Long orderId);
     ResponseEntity<?> getOrdersForUser(UserDTO user);
     ResponseEntity<?> getAllOrders();
     ResponseEntity<?> checkOrderStatus(OrderDTO order);
