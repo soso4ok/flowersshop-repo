@@ -102,23 +102,38 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<?> getOrdersForUser(UserDTO user) {
-        return null;
+    public ResponseEntity<?> getOrdersForUser(Long userId) {
+        try {
+            List<OrderEntity> userOrders = orderRepository.findByUserId(userId);
+            if (userOrders.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders found for the user");
+            }
+            List<OrderDTO> orderDTOs = orderMapper.orderToDtoList(userOrders);
+            return ResponseEntity.ok(orderDTOs);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to fetch orders for the user: " + e.getMessage());
+        }
     }
 
     @Override
-    public ResponseEntity<?> checkOrderStatus(OrderDTO order) {
-        return null;
-    }
+    public ResponseEntity<?> changeOrderStatus(Long orderId, OrderStatusEntity newStatus) {
+        try {
+            Optional<OrderEntity> optionalOrderEntity = orderRepository.findById(orderId);
+            if (optionalOrderEntity.isPresent()) {
+                OrderEntity orderEntity = optionalOrderEntity.get();
 
-    @Override
-    public void cancelOrder(OrderDTO order) {
+                orderEntity.setOrderStatus(newStatus);
 
-    }
+                orderRepository.save(orderEntity);
 
-    @Override
-    public void markOrderAsDelivered(OrderDTO order) {
-
+                return ResponseEntity.ok("Order status updated successfully");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update order status: " + e.getMessage());
+        }
     }
 
     @Override
@@ -140,6 +155,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseEntity<?> getAllOrders() {
-        return null;
+        try {
+            List<OrderEntity> orders = orderRepository.findAll();
+            List<OrderDTO> orderDTOs = orderMapper.orderToDtoList(orders);
+            return ResponseEntity.ok(orderDTOs);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to fetch orders: " + e.getMessage());
+        }
     }
 }

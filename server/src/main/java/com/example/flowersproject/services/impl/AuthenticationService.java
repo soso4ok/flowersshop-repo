@@ -11,6 +11,8 @@ import com.example.flowersproject.token.Token;
 import com.example.flowersproject.token.TokenRepository;
 import com.example.flowersproject.token.TokenType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,23 +51,24 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public AuthenticationResponse authenticationResponse(AuthenticationRequest request) {
+    public ResponseEntity<?> authenticationResponse(AuthenticationRequest request) {
 
         try {
-            var user = repository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new AuthenticationException("Invalid email or password", "INVALID"));
+            var userOptional = repository.findByEmail(request.getEmail());
+            var user = userOptional.orElseThrow(() -> new AuthenticationException("Invalid email or password", "INVALID"));
+
             var jwtToken = jwtService.generateToken(user);
             var refreshToken = jwtService.generateRefreshToken(user);
 
             revokeAllUserTokens(user);
             saveUserToken(user, jwtToken);
 
-            return AuthenticationResponse.builder()
+            return ResponseEntity.ok(AuthenticationResponse.builder()
                     .accessToken(jwtToken)
                     .refreshToken(refreshToken)
-                    .build();
+                    .build());
         } catch (AuthenticationException e) {
-            throw e;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
