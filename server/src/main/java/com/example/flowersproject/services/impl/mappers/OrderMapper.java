@@ -1,10 +1,9 @@
-package com.example.flowersproject.services.impl.util;
+package com.example.flowersproject.services.impl.mappers;
 
-import com.example.flowersproject.entity.dto.OrderDTO;
-import com.example.flowersproject.entity.dto.ProductDTO;
+import com.example.flowersproject.dto.OrderDTO;
+import com.example.flowersproject.dto.ProductDTO;
 import com.example.flowersproject.entity.order.OrderEntity;
 import com.example.flowersproject.entity.order.OrderItemEntity;
-import com.example.flowersproject.entity.product.ProductEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

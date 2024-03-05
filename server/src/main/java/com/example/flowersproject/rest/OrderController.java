@@ -1,17 +1,14 @@
 package com.example.flowersproject.rest;
 
-import com.example.flowersproject.entity.dto.CreateOrderRequest;
-import com.example.flowersproject.entity.dto.OrderDTO;
-import com.example.flowersproject.entity.dto.UserDTO;
+import com.example.flowersproject.dto.CreateOrderRequest;
+import com.example.flowersproject.dto.OrderDTO;
 import com.example.flowersproject.entity.order.OrderStatusEntity;
 import com.example.flowersproject.services.impl.OrderServiceImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController

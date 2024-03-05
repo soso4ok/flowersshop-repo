@@ -1,32 +1,28 @@
-package com.example.flowersproject.services.impl.util;
+package com.example.flowersproject.services.impl.mappers;
 
-import com.example.flowersproject.entity.dto.FlowerDTO;
-import com.example.flowersproject.entity.product.FlowerEntity;
+import com.example.flowersproject.dto.ProductDTO;
+import com.example.flowersproject.entity.product.ProductEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
-public interface FlowerMapper {
+public interface ProductMapper {
+
 
     @Mappings({
             @Mapping(source = "name", target = "name"),
             @Mapping(source = "description", target = "description"),
             @Mapping(source = "price", target = "price"),
             @Mapping(source = "count", target = "count"),
-            @Mapping(source = "available", target = "available"),
-            @Mapping(source = "image", target = "image")
     })
-    FlowerDTO flowerToDto(FlowerEntity flowerEntity);
+    ProductDTO productEntityToProductDTO(ProductEntity productEntity);
 
     @Mappings({
             @Mapping(source = "name", target = "name"),
             @Mapping(source = "description", target = "description"),
             @Mapping(source = "price", target = "price"),
-            @Mapping(source = "available", target = "available"),
             @Mapping(source = "count", target = "count"),
-            @Mapping(source = "image", target = "image")
     })
-    FlowerEntity flowerToEntity(FlowerDTO flowerDto);
-
+    ProductEntity productDTOToProductEntity(ProductDTO productDTO);
 }

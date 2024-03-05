@@ -1,6 +1,6 @@
 package com.example.flowersproject.rest;
 
-import com.example.flowersproject.entity.dto.FlowerDTO;
+import com.example.flowersproject.dto.FlowerDTO;
 import com.example.flowersproject.services.impl.FlowerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/products/flowers")

@@ -1,10 +1,12 @@
-package com.example.flowersproject.entity.dto;
+package com.example.flowersproject.dto;
 
 import com.example.flowersproject.entity.user.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 
 @Data
 @Builder

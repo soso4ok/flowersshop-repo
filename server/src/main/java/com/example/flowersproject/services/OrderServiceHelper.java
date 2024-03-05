@@ -1,7 +1,6 @@
 package com.example.flowersproject.services;
 
-import com.example.flowersproject.entity.dto.ProductDTO;
-import com.example.flowersproject.entity.product.ProductEntity;
+import com.example.flowersproject.dto.ProductDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

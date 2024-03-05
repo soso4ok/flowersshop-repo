@@ -1,13 +1,12 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.entity.dto.FlowerDTO;
+import com.example.flowersproject.dto.FlowerDTO;
 import com.example.flowersproject.entity.product.FlowerEntity;
 import com.example.flowersproject.entity.product.ImageEntity;
 import com.example.flowersproject.repository.FlowerRepository;
 import com.example.flowersproject.repository.ImageRepository;
-import com.example.flowersproject.exceptions.ProductNotFoundException;
 import com.example.flowersproject.services.FlowerService;
-import com.example.flowersproject.services.impl.util.FlowerMapper;
+import com.example.flowersproject.services.impl.mappers.FlowerMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

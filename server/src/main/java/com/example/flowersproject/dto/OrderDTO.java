@@ -1,6 +1,5 @@
-package com.example.flowersproject.entity.dto;
+package com.example.flowersproject.dto;
 
-import com.example.flowersproject.entity.user.UserEntity;
 import lombok.Data;
 
 import java.util.Date;

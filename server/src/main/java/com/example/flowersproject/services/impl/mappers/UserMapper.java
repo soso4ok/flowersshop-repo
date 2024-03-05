@@ -1,6 +1,6 @@
-package com.example.flowersproject.services.impl.util;
+package com.example.flowersproject.services.impl.mappers;
 
-import com.example.flowersproject.entity.dto.UserDTO;
+import com.example.flowersproject.dto.UserDTO;
 import com.example.flowersproject.entity.user.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

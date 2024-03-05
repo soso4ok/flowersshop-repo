@@ -1,8 +1,8 @@
 package com.example.flowersproject.services;
 
-import com.example.flowersproject.entity.dto.OrderDTO;
-import com.example.flowersproject.entity.dto.ProductDTO;
-import com.example.flowersproject.entity.dto.UserDTO;
+import com.example.flowersproject.dto.OrderDTO;
+import com.example.flowersproject.dto.ProductDTO;
+import com.example.flowersproject.dto.UserDTO;
 import com.example.flowersproject.entity.order.OrderStatusEntity;
 import org.springframework.http.ResponseEntity;
 

@@ -1,6 +1,9 @@
-
-
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: newflowershop2024@gmail.com
+    password: imig gmes cqsw hzdu
   datasource:
     url: jdbc:postgresql://localhost:5432/FlowersDB
     username: postgres

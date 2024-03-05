@@ -1,21 +1,26 @@
-package com.example.flowersproject.services.impl;
+package com.example.flowersproject.services.impl.auth;
 
-import com.example.flowersproject.entity.dto.AuthenticationRequest;
-import com.example.flowersproject.entity.dto.AuthenticationResponse;
-import com.example.flowersproject.entity.dto.UserDTO;
+import com.example.flowersproject.dto.AuthenticationRequest;
+import com.example.flowersproject.dto.AuthenticationResponse;
+import com.example.flowersproject.dto.UserDTO;
 import com.example.flowersproject.entity.user.UserEntity;
 import com.example.flowersproject.exceptions.AuthenticationException;
 import com.example.flowersproject.repository.UserRepository;
+import com.example.flowersproject.rest.auth.PasswordRecoveryController;
 import com.example.flowersproject.security.JwtService;
 import com.example.flowersproject.token.Token;
 import com.example.flowersproject.token.TokenRepository;
 import com.example.flowersproject.token.TokenType;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +30,8 @@ public class AuthenticationService {
     private final UserRepository repository;
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
+    private static Logger log = LoggerFactory.getLogger(PasswordRecoveryController.class);
+
 
     @Transactional
     public AuthenticationResponse register(UserDTO request) {
@@ -53,23 +60,28 @@ public class AuthenticationService {
     @Transactional
     public ResponseEntity<?> authenticationResponse(AuthenticationRequest request) {
 
-        try {
             var userOptional = repository.findByEmail(request.getEmail());
-            var user = userOptional.orElseThrow(() -> new AuthenticationException("Invalid email or password", "INVALID"));
+            var user = userOptional.orElseThrow(() ->
+                    new AuthenticationException("Invalid email or password", ""));
 
-            var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(user);
+            if(userOptional.isPresent()) {
 
-            revokeAllUserTokens(user);
-            saveUserToken(user, jwtToken);
+                if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid email or password" + "INVALID");
+                }
 
-            return ResponseEntity.ok(AuthenticationResponse.builder()
-                    .accessToken(jwtToken)
-                    .refreshToken(refreshToken)
-                    .build());
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+                String jwtToken = jwtService.generateToken(user);
+                String refreshToken = jwtService.generateRefreshToken(user);
+
+                revokeAllUserTokens(user);
+                saveUserToken(user, jwtToken);
+
+                return ResponseEntity.ok(AuthenticationResponse.builder()
+                        .accessToken(jwtToken)
+                        .refreshToken(refreshToken)
+                        .build());
+            }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("INTERNAL_SERVER_ERROR");
     }
 
 
@@ -95,8 +107,4 @@ public class AuthenticationService {
                 .build();
         tokenRepository.save(token);
     }
-
-
-
-
 }

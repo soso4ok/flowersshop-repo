@@ -1,26 +1,22 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.entity.dto.OrderDTO;
-import com.example.flowersproject.entity.dto.ProductDTO;
-import com.example.flowersproject.entity.dto.UserDTO;
+import com.example.flowersproject.dto.OrderDTO;
+import com.example.flowersproject.dto.ProductDTO;
+import com.example.flowersproject.dto.UserDTO;
 import com.example.flowersproject.entity.order.OrderEntity;
 import com.example.flowersproject.entity.order.OrderItemEntity;
 import com.example.flowersproject.entity.order.OrderStatusEntity;
 import com.example.flowersproject.repository.OrderRepository;
 import com.example.flowersproject.services.OrderService;
 import com.example.flowersproject.services.OrderServiceHelper;
-import com.example.flowersproject.services.impl.util.OrderMapper;
-import com.example.flowersproject.services.impl.util.ProductMapper;
-import com.example.flowersproject.services.impl.util.UserMapper;
+import com.example.flowersproject.services.impl.mappers.OrderMapper;
+import com.example.flowersproject.services.impl.mappers.UserMapper;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 
-import javax.naming.NameNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +29,6 @@ public class OrderServiceImpl implements OrderService {
     private final UserMapper userMapper;
     private final OrderRepository orderRepository;
     private final OrderServiceHelper orderServiceHelper;
-
-    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Override
     public ResponseEntity<?> createOrder(UserDTO user, List<ProductDTO> products) {

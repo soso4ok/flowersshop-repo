@@ -1,6 +1,6 @@
 package com.example.flowersproject.exceptions;
 
-import com.example.flowersproject.entity.dto.BouquetDTO;
+import com.example.flowersproject.dto.BouquetDTO;
 import com.example.flowersproject.services.impl.BouquetServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,8 +20,6 @@ import java.util.List;
 public class BouquetController {
 
     private final BouquetServiceImpl bouquetService;
-
-    private static final Logger log = LoggerFactory.getLogger(BouquetController.class);
 
     @GetMapping
     public ResponseEntity<List<BouquetDTO>> getAllBouquet() {

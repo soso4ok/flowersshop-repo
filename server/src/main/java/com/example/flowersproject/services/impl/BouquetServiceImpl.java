@@ -1,13 +1,13 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.entity.dto.BouquetDTO;
+import com.example.flowersproject.dto.BouquetDTO;
 import com.example.flowersproject.entity.product.BouquetEntity;
 import com.example.flowersproject.entity.product.ImageEntity;
 import com.example.flowersproject.repository.BouquetRepository;
 import com.example.flowersproject.repository.ImageRepository;
 import com.example.flowersproject.exceptions.ProductNotFoundException;
 import com.example.flowersproject.services.BouquetService;
-import com.example.flowersproject.services.impl.util.BouquetMapper;
+import com.example.flowersproject.services.impl.mappers.BouquetMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
