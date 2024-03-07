@@ -1,4 +1,4 @@
-package com.example.flowersproject.services.impl.mappers;
+package com.example.flowersproject.services.mappers;
 
 import com.example.flowersproject.dto.OrderDTO;
 import com.example.flowersproject.dto.ProductDTO;

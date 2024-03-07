@@ -2,14 +2,16 @@ package com.example.flowersproject.rest.auth;
 
 import com.example.flowersproject.dto.AuthenticationRequest;
 import com.example.flowersproject.dto.UserDTO;
-import com.example.flowersproject.services.impl.auth.AuthenticationService;
+import com.example.flowersproject.exceptions.AuthenticationException;
 import com.example.flowersproject.services.impl.UserServiceImpl;
+import com.example.flowersproject.services.impl.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -17,16 +19,16 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
-    private final UserServiceImpl userService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserDTO request) {
         try {
             return ResponseEntity.ok(authenticationService.register(request));
-        } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>("Email address is already in use", HttpStatus.BAD_REQUEST);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<>("Unexpected error during registration/authentication", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Unexpected error during registration/authentication",
+                                        HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -36,7 +38,9 @@ public class AuthController {
             var response = authenticationService.authenticationResponse(request);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

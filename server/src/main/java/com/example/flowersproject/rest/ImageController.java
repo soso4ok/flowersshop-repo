@@ -15,7 +15,7 @@ import java.io.IOException;
 
 
 @RestController
-@RequestMapping("api/v1/products/flowers/images")
+@RequestMapping("api/v1/products/images")
 @AllArgsConstructor
 public class ImageController {
 

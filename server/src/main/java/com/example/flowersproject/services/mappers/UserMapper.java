@@ -1,4 +1,4 @@
-package com.example.flowersproject.services.impl.mappers;
+package com.example.flowersproject.services.mappers;
 
 import com.example.flowersproject.dto.UserDTO;
 import com.example.flowersproject.entity.user.UserEntity;

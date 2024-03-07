@@ -7,7 +7,7 @@ import com.example.flowersproject.repository.BouquetRepository;
 import com.example.flowersproject.repository.ImageRepository;
 import com.example.flowersproject.exceptions.ProductNotFoundException;
 import com.example.flowersproject.services.BouquetService;
-import com.example.flowersproject.services.impl.mappers.BouquetMapper;
+import com.example.flowersproject.services.mappers.BouquetMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

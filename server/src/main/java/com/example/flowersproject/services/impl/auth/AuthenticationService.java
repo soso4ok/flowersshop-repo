@@ -8,6 +8,7 @@ import com.example.flowersproject.exceptions.AuthenticationException;
 import com.example.flowersproject.repository.UserRepository;
 import com.example.flowersproject.rest.auth.PasswordRecoveryController;
 import com.example.flowersproject.security.JwtService;
+import com.example.flowersproject.services.impl.UserServiceImpl;
 import com.example.flowersproject.token.Token;
 import com.example.flowersproject.token.TokenRepository;
 import com.example.flowersproject.token.TokenType;
@@ -20,8 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -29,12 +28,17 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
     private final JwtService jwtService;
+    private final UserServiceImpl userService;
     private final TokenRepository tokenRepository;
     private static Logger log = LoggerFactory.getLogger(PasswordRecoveryController.class);
 
 
     @Transactional
     public AuthenticationResponse register(UserDTO request) {
+
+        if (userService.userAlreadyExists(request.getEmail())) {
+            throw new AuthenticationException("User already exists", request.getEmail());
+        }
 
             var user = UserEntity.builder()
                     .firstname(request.getFirstname())
@@ -58,7 +62,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public ResponseEntity<?> authenticationResponse(AuthenticationRequest request) {
+    public AuthenticationResponse authenticationResponse(AuthenticationRequest request) {
 
             var userOptional = repository.findByEmail(request.getEmail());
             var user = userOptional.orElseThrow(() ->
@@ -67,7 +71,7 @@ public class AuthenticationService {
             if(userOptional.isPresent()) {
 
                 if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid email or password" + "INVALID");
+                    throw new AuthenticationException("Invalid email or password for user: ", request.getEmail());
                 }
 
                 String jwtToken = jwtService.generateToken(user);
@@ -76,12 +80,12 @@ public class AuthenticationService {
                 revokeAllUserTokens(user);
                 saveUserToken(user, jwtToken);
 
-                return ResponseEntity.ok(AuthenticationResponse.builder()
+                return AuthenticationResponse.builder()
                         .accessToken(jwtToken)
                         .refreshToken(refreshToken)
-                        .build());
+                        .build();
             }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("INTERNAL_SERVER_ERROR");
+        throw new RuntimeException("Internal server error");
     }
 
 

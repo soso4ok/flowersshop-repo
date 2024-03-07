@@ -6,7 +6,7 @@ import com.example.flowersproject.entity.product.ImageEntity;
 import com.example.flowersproject.repository.FlowerRepository;
 import com.example.flowersproject.repository.ImageRepository;
 import com.example.flowersproject.services.FlowerService;
-import com.example.flowersproject.services.impl.mappers.FlowerMapper;
+import com.example.flowersproject.services.mappers.FlowerMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
