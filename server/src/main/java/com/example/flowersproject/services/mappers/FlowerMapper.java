@@ -10,6 +10,7 @@ import org.mapstruct.Mappings;
 public interface FlowerMapper {
 
     @Mappings({
+            @Mapping(source = "id", target = "id"),
             @Mapping(source = "name", target = "name"),
             @Mapping(source = "description", target = "description"),
             @Mapping(source = "price", target = "price"),

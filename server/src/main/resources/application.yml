@@ -5,7 +5,7 @@ spring:
     username: newflowershop2024@gmail.com
     password: imig gmes cqsw hzdu
   datasource:
-    url: jdbc:postgresql://localhost:5432/FlowersDB
+    url: jdbc:postgresql://localhost:5432/flowersdb
     username: postgres
     password: asdf
     driver-class-name: org.postgresql.Driver

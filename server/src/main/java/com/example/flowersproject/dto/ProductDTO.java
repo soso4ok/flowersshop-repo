@@ -12,4 +12,6 @@ public class ProductDTO {
     private String description;
     private double price;
     private int count;
+    private String available;
+    private ImageEntity image;
 }

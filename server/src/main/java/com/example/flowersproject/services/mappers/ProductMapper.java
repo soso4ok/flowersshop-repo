@@ -11,12 +11,15 @@ public interface ProductMapper {
 
 
     @Mappings({
+            @Mapping(source = "id", target = "id"),
             @Mapping(source = "name", target = "name"),
             @Mapping(source = "description", target = "description"),
             @Mapping(source = "price", target = "price"),
+            @Mapping(source = "available", target = "available"),
             @Mapping(source = "count", target = "count"),
+            @Mapping(source = "image", target = "image")
     })
-    ProductDTO productEntityToProductDTO(ProductEntity productEntity);
+    ProductDTO productToDto(ProductEntity productEntity);
 
     @Mappings({
             @Mapping(source = "name", target = "name"),

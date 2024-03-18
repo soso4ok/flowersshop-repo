@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @Data
 public class FlowerDTO {
 
+    private Long id;
     private String name;
     private String description;
     private double price;

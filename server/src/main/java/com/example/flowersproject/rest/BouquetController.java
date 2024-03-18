@@ -1,10 +1,9 @@
-package com.example.flowersproject.exceptions;
+package com.example.flowersproject.rest;
 
 import com.example.flowersproject.dto.BouquetDTO;
+import com.example.flowersproject.exceptions.ProductNotFoundException;
 import com.example.flowersproject.services.impl.BouquetServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
