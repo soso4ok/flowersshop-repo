@@ -4,6 +4,8 @@ import com.example.flowersproject.entity.product.ImageEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 public class ProductDTO {
 
