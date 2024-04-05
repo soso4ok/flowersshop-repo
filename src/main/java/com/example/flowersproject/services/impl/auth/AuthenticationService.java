@@ -7,22 +7,17 @@ import com.example.flowersproject.entity.user.UserEntity;
 import com.example.flowersproject.entity.user.UserRole;
 import com.example.flowersproject.exceptions.AuthenticationException;
 import com.example.flowersproject.repository.UserRepository;
-import com.example.flowersproject.rest.auth.PasswordRecoveryController;
 import com.example.flowersproject.security.JwtService;
 import com.example.flowersproject.services.impl.UserServiceImpl;
 import com.example.flowersproject.token.Token;
 import com.example.flowersproject.token.TokenRepository;
 import com.example.flowersproject.token.TokenType;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.relation.Role;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +28,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final UserServiceImpl userService;
     private final TokenRepository tokenRepository;
-    private static Logger log = LoggerFactory.getLogger(PasswordRecoveryController.class);
-
 
     @Transactional
     public AuthenticationResponse register(UserDTO request) {
@@ -48,7 +41,7 @@ public class AuthenticationService {
                     .lastname(request.getLastname())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(request.getRole())
+                    .role(UserRole.USER)
                     .build();
 
             var savedUser = repository.save(user);
@@ -89,6 +82,41 @@ public class AuthenticationService {
                         .build();
             }
         throw new RuntimeException("Internal server error");
+    }
+
+    @Transactional
+    public AuthenticationResponse refreshToken(String refreshToken) throws AuthenticationException {
+        Token existingToken = findByTokenAndValid(refreshToken)
+                .orElseThrow(() -> new AuthenticationException("Invalid or expired refresh token", ""));
+
+        UserEntity user = existingToken.getUserEntity();
+
+        String newAccessToken = jwtService.generateToken(user);
+        String newRefreshToken = jwtService.generateRefreshToken(user);
+
+        existingToken.setToken(newAccessToken);
+        if (newRefreshToken != null) {
+            existingToken.setToken(newRefreshToken);
+        }
+        tokenRepository.save(existingToken);
+
+        return AuthenticationResponse.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
+    }
+
+    public void logout(String refreshToken) throws AuthenticationException {
+        Token token = findByTokenAndValid(refreshToken)
+                .orElseThrow(() -> new AuthenticationException("Invalid or expired refresh token", ""));
+
+        token.setExpired(true);
+        tokenRepository.save(token);
+    }
+
+    Optional<Token> findByTokenAndValid(String refreshToken) {
+        return tokenRepository.findByToken(refreshToken)
+                .filter(token -> !token.isExpired() && !token.isRevoked());
     }
 
 

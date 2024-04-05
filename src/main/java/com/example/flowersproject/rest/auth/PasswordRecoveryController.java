@@ -17,7 +17,7 @@ public class PasswordRecoveryController {
 
     @PostMapping("/initiate")
     public ResponseEntity<String> initiatePasswordRecovery(@RequestParam("email") String email) {
-        UserEntity user = userService.findByEmail(email);
+        UserEntity user = (UserEntity) userService.loadUserByUsername(email);
         if (user != null) {
             passwordRecoveryService.initiatePasswordRecovery(user);
             return ResponseEntity.ok("Password recovery initiated. Please check your email.");

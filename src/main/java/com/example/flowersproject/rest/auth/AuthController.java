@@ -44,4 +44,17 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/token")
+    public ResponseEntity<?> refreshToken (@RequestBody String token) {
+        try {
+            System.out.println(token);
+            var response = authenticationService.refreshToken(token);
+            return ResponseEntity.ok(response);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

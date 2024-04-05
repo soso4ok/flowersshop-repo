@@ -11,18 +11,18 @@ import com.example.flowersproject.token.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -49,18 +49,12 @@ public class UserServiceImpl implements UserService {
         tokenRepository.delete(recoveryToken);
     }
 
-    @Override
-    public UserEntity findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow();
-    }
-
-    @Override
     public UserDTO getUserInfo(String token) {
         String jwtToken = token.substring(7);
         String email = jwtService.extractUseremail(jwtToken);
 
         if (email != null) {
-            UserEntity userEntity = findByEmail(email);
+            UserEntity userEntity = (UserEntity) loadUserByUsername(email);
             if (userEntity != null) {
                 logger.info("ahahahahahahah", userEntity);
                 return userMapper.userEntityToDto(userEntity);
@@ -74,4 +68,9 @@ public class UserServiceImpl implements UserService {
         return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username)
+                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+    }
 }

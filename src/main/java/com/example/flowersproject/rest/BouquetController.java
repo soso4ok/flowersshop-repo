@@ -40,11 +40,10 @@ public class BouquetController {
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createBouquet(
             @RequestPart("bouquetRequest") BouquetDTO bouquetDTO,
             @RequestPart("imageFile") MultipartFile imageFile
-    ) throws IOException {
+    ) {
         var createdResponse = bouquetService.createBouquet(bouquetDTO, imageFile);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdResponse);
     }

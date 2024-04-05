@@ -52,7 +52,7 @@ public class BouquetServiceImpl implements BouquetService {
     }
 
     @Override
-    public ResponseEntity<?> createBouquet(BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException {
+    public ResponseEntity<?> createBouquet(BouquetDTO bouquetDTO, MultipartFile imageFile) {
 
         try {
 

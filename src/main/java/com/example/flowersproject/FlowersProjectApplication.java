@@ -14,14 +14,31 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @AllArgsConstructor
-public class FlowersProjectApplication  {
+public class FlowersProjectApplication implements CommandLineRunner {
+
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(FlowersProjectApplication.class, args);
 	}
 
-
+	@Override
+	public void run(String... args) throws Exception {
+		UserEntity userEntity = userRepository.findByRole(UserRole.ADMIN);
+		if (userEntity == null) {
+			userRepository.save(UserEntity.builder()
+								.firstname("admin")
+								.lastname("admin")
+								.email("admin@gmail.com")
+								.password(passwordEncoder.encode("admin"))
+								.role(UserRole.ADMIN)
+								.build()
+			);
+		}
+	}
 }

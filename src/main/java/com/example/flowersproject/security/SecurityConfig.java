@@ -1,9 +1,11 @@
 package com.example.flowersproject.security;
 
 import com.example.flowersproject.config.CustomLogoutHandler;
+import com.example.flowersproject.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
@@ -38,6 +41,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter authFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final UserServiceImpl userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,44 +50,26 @@ public class SecurityConfig {
 
         http.cors(withDefaults());
 
-//        http.sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-//                .logout(logout ->
-//                        logout.logoutUrl("/api/v1/auth/logout")
-//                                .addLogoutHandler(logoutHandler())
-//                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-//                );
-
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers(WHITE_LIST_URL)
                             .permitAll();
-            auth.requestMatchers(POST, "/api/v1/products/bouquets").hasRole(ADMIN.name())
-                    .anyRequest()
-                    .authenticated();
-        });
-
-//        http.authorizeHttpRequests(auth -> {
-//                    auth.requestMatchers(WHITE_LIST_URL)
-//                            .permitAll()
-//                            .requestMatchers("/api/v1/admin/**").hasRole(ADMIN.name())
-//                            .requestMatchers(GET, "/api/v1/products/**", "/api/v1/order/**", "/api/v1/blogs/**").permitAll()
-//                            .requestMatchers(GET, "/api/v1/users/**").permitAll()
-//                            .requestMatchers(DELETE, "/api/v1/order/**").hasRole(ADMIN.name())
-//                            .requestMatchers(POST, "/api/v1/products/bouquets/**").hasRole(ADMIN.name())
-//                            .requestMatchers(POST, "/api/v1/products/**", "/api/v1/blogs/**").hasRole(ADMIN.name())
-//                            .requestMatchers(PUT, "/api/v1/products/**", "/api/v1/order/**", "/api/v1/blogs/**").hasRole(ADMIN.name())
-//                            .requestMatchers(DELETE, "/api/v1/products/**", "/api/v1/order/**", "/api/v1/blogs/**").hasRole(ADMIN.name())
-//                            .anyRequest()
-//                            .authenticated();
-//                }).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-//                .logout(logout ->
-//                        logout.logoutUrl("/api/v1/auth/logout")
-//                                .addLogoutHandler(logoutHandler())
-//                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-//                );
+                    auth.requestMatchers(WHITE_LIST_URL)
+                            .permitAll()
+                            .requestMatchers("/api/v1/admin/**").hasRole(ADMIN.name())
+                            .requestMatchers(GET, "/api/v1/products/**", "/api/v1/order/**", "/api/v1/blogs/**").permitAll()
+                            .requestMatchers(GET, "/api/v1/users/**").permitAll()
+                            .requestMatchers(DELETE, "/api/v1/order/**").hasRole(ADMIN.name())
+                            .requestMatchers(POST, "/api/v1/products/**", "/api/v1/blogs/**", "/api/v1/products/bouquets/**").hasRole(ADMIN.name())
+                            .requestMatchers(PUT, "/api/v1/products/**", "/api/v1/order/**", "/api/v1/blogs/**").hasRole(ADMIN.name())
+                            .requestMatchers(DELETE, "/api/v1/products/**", "/api/v1/order/**", "/api/v1/blogs/**").hasRole(ADMIN.name())
+                            .anyRequest()
+                            .authenticated();
+        }).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(
+                        e->e.accessDeniedHandler((request, response, accessDeniedException)->response.setStatus(403))
+                                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
 
         return http.build();
     }
