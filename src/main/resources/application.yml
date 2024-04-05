@@ -1,0 +1,27 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: newflowershop2024@gmail.com
+    password: imig gmes cqsw hzdu
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+application:
+  security:
+    jwt:
+      secret-key: NXiq/nDgIORAC2Gij/th6ukfF1uFax7H+9LfFl+UhN5fBuMn1TesTK/7eD4e5Z4X8JYTm5tQm6mXyMqr
+      expiration: 86400000
+      refresh-token:
+        expiration: 604800000
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+server:
+  port: 8083
