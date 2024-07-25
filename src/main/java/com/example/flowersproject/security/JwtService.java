@@ -1,6 +1,5 @@
 package com.example.flowersproject.security;
 
-import com.example.flowersproject.exceptions.UnauthorizedExeption;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -33,12 +32,12 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateTokenNigger(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateTokenNigger(new HashMap<>(), userDetails);
+        return generateToken(new HashMap<>(), userDetails);
     }
 
     public String generateRefreshToken(UserDetails userDetails) {

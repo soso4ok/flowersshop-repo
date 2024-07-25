@@ -1,6 +1,6 @@
 package com.example.flowersproject.services.impl;
 
-import com.example.flowersproject.entity.ImageEntity;
+import com.example.flowersproject.entity.product.ImageEntity;
 import com.example.flowersproject.entity.SlideEntity;
 import com.example.flowersproject.repository.SlideRepository;
 import com.example.flowersproject.services.SlideService;
@@ -28,7 +28,7 @@ public class SlideServiceImpl implements SlideService {
     @Override
     public SlideEntity addSlide(MultipartFile imageFile) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
-            ImageEntity imageEntity = imageService.saveImage(imageFile);
+            ImageEntity imageEntity = imageService.uploadImage(imageFile);
             SlideEntity slideEntity = new SlideEntity();
             slideEntity.setImage(imageEntity);
             return slideRepository.save(slideEntity);

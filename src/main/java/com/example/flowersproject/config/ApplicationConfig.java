@@ -20,11 +20,9 @@ import org.springframework.web.multipart.support.StandardServletMultipartResolve
 public class ApplicationConfig {
 
     private final UserRepository repository;
-
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> repository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userEmail-> repository.findByEmail(userEmail).orElseThrow();
     }
 
     @Bean
