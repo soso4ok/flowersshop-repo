@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'soso4ok/flowersproject'
-        DOCKER_CREDENTIALS_ID = '6fb21bb4-72e9-4d46-99ba-96e227758599'
+        DOCKER_CREDENTIALS_ID = 'b7bb68dc-755d-4685-93ad-46c25dc5f170'
     }
 
     stages {
