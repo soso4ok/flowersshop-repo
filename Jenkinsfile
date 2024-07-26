@@ -1,7 +1,10 @@
-
 pipeline {
-    agent any
-
+    agent {
+        docker {
+            image 'maven:3.8.7-openjdk-17'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
     environment {
         DOCKER_IMAGE = 'soso4ok/flowersproject'
         DOCKER_CREDENTIALS_ID = '6fb21bb4-72e9-4d46-99ba-96e227758599'
