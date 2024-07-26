@@ -13,10 +13,14 @@ pipeline {
             }
         }
         stage('Build') {
-            steps {
-                script {
-                    sh 'mvn clean package'
+            agent {
+                docker {
+                    image 'maven:3.8.1-jdk-11' // Specify a Maven Docker image
+                    args '-v /var/jenkins_home/.m2:/root/.m2' // Mount the local Maven repository cache
                 }
+            }
+            steps {
+                sh 'mvn clean package'
             }
         }
         stage('Build Docker Image') {
@@ -43,6 +47,18 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+        always {
+            cleanWs() // Clean workspace after build
         }
     }
 }
