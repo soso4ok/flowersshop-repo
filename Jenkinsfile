@@ -15,16 +15,14 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    docker.image('maven:3.8.7-openjdk-17').inside('-v /var/run/docker.sock:/var/run/docker.sock') {
-                        sh 'mvn clean package'
-                    }
+                    sh 'mvn clean package'
                 }
             }
         }
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build(DOCKER_IMAGE)
+                    sh "docker build -t ${env.DOCKER_IMAGE} ."
                 }
             }
         }
@@ -32,7 +30,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                        docker.image(DOCKER_IMAGE).push('latest')
+                        sh "docker push ${env.DOCKER_IMAGE}:latest"
                     }
                 }
             }
@@ -41,7 +39,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                        docker.image(DOCKER_IMAGE).run('-d -p 8083:8083')
+                        sh "docker run -d -p 8083:8083 ${env.DOCKER_IMAGE}:latest"
                     }
                 }
             }
