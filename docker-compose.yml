@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  flowersproject-backend:
+    image: flowersproject-backend
+    build:
+      context: ./flowersshop-repo
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/flowersdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: your-email@gmail.com
+      SPRING_MAIL_PASSWORD: your-email-password
+    depends_on:
+      - db
+
+#  flowersproject-frontend:
+#    image: flowersproject-frontend
+#    build:
+#      context: ./flowers-fe
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - flowersproject-backend
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: flowersdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+

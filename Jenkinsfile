@@ -35,14 +35,17 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy with Docker Compose') {
             steps {
                 script {
-                    docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                        sh "docker run -d -p 8083:8083 ${env.DOCKER_IMAGE}:latest"
-                    }
+                    sh "docker-compose -f docker-compose.yml up -d"
                 }
             }
+        }
+    }
+    post {
+        always {
+            sh 'docker-compose -f docker-compose.yml down'
         }
     }
 }
