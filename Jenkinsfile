@@ -22,13 +22,4 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            script {
-                dir('/var/lib/jenkins/workspace/flowers-back') {
-                    sh 'docker-compose down'
-                }
-            }
-        }
-    }
 }
