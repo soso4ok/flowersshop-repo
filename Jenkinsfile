@@ -38,7 +38,9 @@ pipeline {
         stage('Deploy with Docker Compose') {
             steps {
                 script {
-                    sh "docker-compose -f docker-compose.yml up -d"
+                         dir('/var/lib/jenkins/workspace/flowers-back') {
+                                    sh "docker-compose up -d"
+                                }
                 }
             }
         }
