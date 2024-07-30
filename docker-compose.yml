@@ -2,9 +2,8 @@ version: '3.8'
 
 services:
   flowersproject-backend:
-    image: flowersproject-backend
     build:
-      context: ./flowersshop-repo
+      context: .
       dockerfile: Dockerfile
     ports:
       - "8083:8083"
