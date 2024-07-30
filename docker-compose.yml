@@ -14,8 +14,8 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
-      SPRING_MAIL_USERNAME: your-email@gmail.com
-      SPRING_MAIL_PASSWORD: your-email-password
+      SPRING_MAIL_USERNAME: newflowershop2024@gmail.com
+      SPRING_MAIL_PASSWORD: imig gmes cqsw hzdu
     depends_on:
       - db
 

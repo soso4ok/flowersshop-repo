@@ -1,4 +1,9 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/flowersdb
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
   mail:
     host: smtp.gmail.com
     port: 587
