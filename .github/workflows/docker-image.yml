@@ -21,4 +21,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: soso4ok/flowersshop-repo:latest
+          tags: soso4ok/flowersproject:latest
