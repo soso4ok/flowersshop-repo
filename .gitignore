@@ -1,0 +1,81 @@
+# Java/Spring Boot
+target/
+*.class
+*.jar
+*.war
+*.ear
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+*.ipr
+*.iws
+bin/
+out/
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradlew
+!gradlew.bat
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.override.yml
+*.log
+**/docker-compose.yaml
+**/docker-compose.yml
+
+# Database
+*.sql
+postgres_data/
+
+# Environment Variables
+.env
+*.env
+application-local.yml
+application-dev.yml
+application-prod.yml
+application.yml
+application.yaml
+
+# Logs
+logs/
+*.log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node.js (for frontend)
+node_modules/
+npm-debug.log/
+dist/
+build/*
+!build/.dockerignore
+!build/Dockerfile
+!build/docker-compose.yml
+
+# Dependency directories
+node_modules/
+#)
+
+# IDEs and Editor
+*.sublime-project
+*.sublime-workspace
+.vscode/
+*.code-workspace
