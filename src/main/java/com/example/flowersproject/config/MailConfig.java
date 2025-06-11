@@ -1,6 +1,5 @@
 package com.example.flowersproject.config;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,21 +12,24 @@ import java.util.Properties;
 public class MailConfig {
 
     @Value("${spring.mail.host}")
-    private String mailHost;
+    private String host;
+
     @Value("${spring.mail.port}")
-    private Integer mailPort;
+    private int port;
+
     @Value("${spring.mail.username}")
-    private String mailUsername;
+    private String username;
+
     @Value("${spring.mail.password}")
-    private String mailPassword;
+    private String password;
 
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-        javaMailSender.setHost(mailHost);
-        javaMailSender.setPort(mailPort);
-        javaMailSender.setUsername(mailUsername);
-        javaMailSender.setPassword(mailPassword);
+        javaMailSender.setHost(host);
+        javaMailSender.setPort(port);
+        javaMailSender.setUsername(username);
+        javaMailSender.setPassword(password);
 
         Properties properties = javaMailSender.getJavaMailProperties();
         properties.put("mail.smtp.starttls.enable", "true");
@@ -36,4 +38,3 @@ public class MailConfig {
         return javaMailSender;
     }
 }
-
