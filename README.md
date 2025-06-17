@@ -1,98 +1,119 @@
-# Back-end application for Online shop
+# Flower Shop Application
 
-## AuthController
+Welcome to the **Flower Shop** project! This is a Java-based application designed to help manage the operations of a flower shop— from inventory tracking to order processing.
 
-### Description:
-The AuthController class provides endpoints for user authentication and registration.
+## Table of Contents
 
-### Endpoints
+- [Features](#features)  
+- [Tech Stack](#tech-stack)  
+- [Getting Started](#getting-started)  
+  - [Prerequisites](#prerequisites)  
+  - [Installation](#installation)  
+  - [Configuration](#configuration)  
+- [Usage](#usage)  
+- [Running Tests](#running-tests)  
+- [Contributing](#contributing)  
+- [License](#license)  
+- [Contact](#contact)  
 
-## Endpoint			Method		Description	Response
-	/demo			GET		Returns a simple message "working".	200 OK
-	/register		POST		Registers a new user.	200 OK on success, 409 Conflict if user already exists
-	/authenticate		POST			Authenticates a user and returns an authentication token.	200 OK on success, 401 Unauthorized if authentication fails
+## Features
 
-## ProductControllers
+- Inventory management for different flower types  
+- Order creation and processing  
+- Customer data storage  
+- Reporting of sales and inventory levels  
+- Input validation and error handling  
 
-### Description:
-The ProductControllers class provides endpoints for managing products.
+## Tech Stack
 
-### Endpoints
+- Java 11 (or higher)  
+- Maven for build and dependency management  
 
-## Endpoint					Method		DescriptionResponse
-	/products				GET		Retrieves a list of all products.	200 OK on success, 404 Not Found if no products exist
-	/products/{productId}			GET		Retrieves a specific product by its ID.	200 OK on success, 404 Not Found if product not found
-	/products				POST		Creates a new product.	201 Created on success, 400 Bad Request if invalid data is provided
-	/products/{productId}			PUT		Updates a specific product by its ID.	200 OK on success, 404 Not Found if product not found, 400 Bad Request if invalid data is provided
-	/products/{productId}			DELETE		Deletes a specific product by its ID.	204 No Content on success, 404 Not Found if product not found
- ## Request					Parameters
-	product (POST): 			The product data, represented as a ProductEntity object.
-	productId (GET, PUT, DELETE): 		The ID of the product to retrieve, update, or delete.
-	imageFile (POST): 			The image file to associate with the product, represented as a MultipartFile object.
- ## Response Data
-	product (GET, POST, PUT): 		The product data, represented as a ProductEntity object.
-	authenticationToken (POST,
- 			    PATCH): 		The authentication token, represented as a JSON object containing the token value and expiration time.
- ### Examples
+## Getting Started
 
-## Registering a new user:
-POST /auth/register
-Content-Type: application/json
+### Prerequisites
 
-{
-  "email": "user@example.com",
-  "password": "mypassword"
-}
-Response:
+Ensure you have the following installed on your machine:
 
-200 OK
-## Authenticating a user:
-POST /auth/authenticate
-Content-Type: application/json
+- Java Development Kit (JDK) 11 or higher  
+- Apache Maven 3.6+  
 
-{
-  "email": "user@example.com",
-  "password": "mypassword"
-}
-Response:
+Verify installation with:
 
-200 OK
-JSON
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTYiLCJleHAiOjE1ODk3OTk2NzYsImlkIjoyMjM0NTYifQ.sSyt-955347-5678-4567-8-90AB-CDEF"
-}
-Use code with caution.
-## Retrieving a list of all products:
-GET /products
-Response:
+```bash
+java -version
+mvn -v
+```
 
-200 OK
-JSON
-[
-  {
-    "id": 1,
-    "title": "Product 1",
-    "subtext": "This is a product description.",
-    "price": "10.00",
-    "available": true
-  },
-  {
-    "id": 2,
-    "title": "Product 2",
-    "subtext": "This is another product description.",
-    "price": "20.00",
-    "available": false
-  }
-]
-Use code with caution. 
-## Retrieving a specific product by ID:
-GET /products/1
-Response:
+### Installation
 
-200 OK
-JSON
-{
-  "id": 1,
-  "title": "Product 1",
-  "subtext": "This is a product
-Use code with caution. 
+1. Clone the repository  
+   ```bash
+   git clone https://github.com/soso4ok/flowersshop-repo.git
+   cd flowersshop-repo
+   ```  
+2. Build the project and download dependencies:  
+   ```bash
+   mvn clean install
+   ```
+
+### Configuration
+
+If the application requires any external configuration (e.g., database URL, API keys), create a `config.properties` file in the `src/main/resources` directory and add your settings:
+
+```properties
+# src/main/resources/config.properties
+db.url=jdbc:mysql://localhost:3306/flowershop
+db.user=your_username
+db.password=your_password
+```
+
+## Usage
+
+Run the application using Maven:
+
+```bash
+mvn exec:java -Dexec.mainClass="com.flowershop.Main"
+```
+
+Alternatively, you can run the compiled JAR:
+
+```bash
+java -jar target/flowershop-1.0.0.jar
+```
+
+Follow the on-screen prompts to manage inventory, create orders, and view reports.
+
+## Running Tests
+
+Execute unit and integration tests with:
+
+```bash
+mvn test
+```
+
+Test reports will be generated under `target/surefire-reports`.
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository  
+2. Create a feature branch (`git checkout -b feature/YourFeature`)  
+3. Commit your changes (`git commit -m "Add some feature"`)  
+4. Push to the branch (`git push origin feature/YourFeature`)  
+5. Open a Pull Request describing your changes  
+
+Please adhere to the existing coding style and include unit tests for any new functionality.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Contact
+
+- **Author:** soso4ok  
+- **GitHub:** https://github.com/soso4ok/flowersshop-repo  
+- **Email:** your.email@example.com  
+
+Happy coding! 🌸  
