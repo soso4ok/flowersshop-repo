@@ -114,6 +114,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 - **Author:** soso4ok  
 - **GitHub:** https://github.com/soso4ok/flowersshop-repo  
-- **Email:** your.email@example.com  
+- **Email:** vorobiovvolodymyr@gmail.com
 
 Happy coding! 🌸  
