@@ -26,7 +26,16 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-            
+
+      - name: Install Maven
+        run: sudo apt-get update && sudo apt-get install -y maven
+
+      - name: Setup Maven wrapper
+        run: |
+          if [ ! -f .mvn/wrapper/maven-wrapper.jar ]; then
+            mvn wrapper:wrapper
+          fi
+    
       - name: Set executable permissions for Maven wrapper
         run: chmod +x ./mvnw
 
