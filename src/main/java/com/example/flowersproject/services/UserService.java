@@ -1,7 +1,7 @@
 package com.example.flowersproject.services;
 
 import com.example.flowersproject.dto.UserDTO;
-import com.example.flowersproject.entity.user.UserEntity;
+import com.example.flowersproject.entity.user.UserRole;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserService {
@@ -13,4 +13,5 @@ public interface UserService {
 
     UserDTO getUserInfo(String token);
 
+    void updateUserRole(String email, UserRole newRole);
 }

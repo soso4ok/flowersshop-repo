@@ -2,6 +2,7 @@ package com.example.flowersproject.services.impl;
 
 import com.example.flowersproject.dto.UserDTO;
 import com.example.flowersproject.entity.user.UserEntity;
+import com.example.flowersproject.entity.user.UserRole;
 import com.example.flowersproject.repository.UserRepository;
 import com.example.flowersproject.security.JwtService;
 import com.example.flowersproject.services.UserService;
@@ -11,6 +12,7 @@ import com.example.flowersproject.token.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,12 +67,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     boolean userHasPermissionToDoRequest() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return !isAdmin;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
+    public void updateUserRole(String email, UserRole newRole) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication != null && authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if (!isAdmin) {
+            throw new AccessDeniedException("Only admin can update roles");
+        }
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.setRole(newRole);
+        userRepository.save(user);
     }
 }

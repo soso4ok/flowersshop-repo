@@ -14,17 +14,17 @@ public interface ProductMapper {
             @Mapping(source = "id", target = "id"),
             @Mapping(source = "name", target = "name"),
             @Mapping(source = "description", target = "description"),
-            @Mapping(source = "price", target = "price"),
             @Mapping(source = "available", target = "available"),
             @Mapping(source = "count", target = "count"),
-            @Mapping(source = "image", target = "image")
+            @Mapping(source = "image", target = "image"),
+            @Mapping(source = "image.imageId", target = "imageId")
     })
     ProductDTO productToDto(ProductEntity productEntity);
 
     @Mappings({
             @Mapping(source = "name", target = "name"),
             @Mapping(source = "description", target = "description"),
-            @Mapping(source = "price", target = "price"),
+            @Mapping(target = "price", constant = "0.0"), // price not available in DTO, set default
             @Mapping(source = "count", target = "count"),
     })
     ProductEntity productDTOToProductEntity(ProductDTO productDTO);
