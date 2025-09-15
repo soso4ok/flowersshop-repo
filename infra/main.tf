@@ -19,6 +19,9 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
+  client_id       = var.client_id
+  client_secret   = var.client_secret
+  tenant_id       = var.tenant_id
   subscription_id = var.subscription_id
 }
 
@@ -38,13 +41,5 @@ resource "azurerm_resource_group" "flowers_back-end-rg" {
     Environment = "Development"
     Team        = "Back-end"
   }
-}
-
-provider "azurerm" {
-  features {}
-  client_id       = var.client_id
-  client_secret   = var.client_secret
-  tenant_id       = var.tenant_id
-  subscription_id = var.subscription_id
 }
 

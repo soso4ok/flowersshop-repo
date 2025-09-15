@@ -106,11 +106,6 @@ variable "jwt_refresh_expiration" {
 }
 
 # Credentials
-variable "subscription_id" {
-  description = "Azure Subscription ID"
-  type        = string
-  sensitive = true
-}
 
 # variable "current_user_object_id" {
 #   description = "Current user's object ID for Key Vault access"
