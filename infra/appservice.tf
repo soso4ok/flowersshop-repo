@@ -17,7 +17,7 @@ resource "azurerm_linux_web_app" "java_back_end_17" {
   site_config {
     application_stack {
       docker_image     = "${azurerm_container_registry.acr.login_server}/flowers-back-end"
-      docker_image_tag = "latest"
+      docker_image_tag = var.docker_image_tag
     }
   }
 

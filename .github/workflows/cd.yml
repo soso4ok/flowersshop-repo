@@ -1,4 +1,4 @@
-name: CD
+name: Build and Deploy Application
 
 on:
   workflow_dispatch:
@@ -13,22 +13,52 @@ on:
 env:
   ACR_NAME: acrflowersdbcompanyx3f8a1
   IMAGE_NAME: flowers-back-end
-  IMAGE_TAG: latest
   AZURE_RESOURCE_GROUP: flowers-backend-rg-europe
-  WEBAPP_NAME_PREFIX: flowers-webapp-
 
 jobs:
-  terraform-plan-apply:
-    name: Terraform validate/plan/apply
+  build-and-push-image:
+    name: Build and Push Docker Image
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
-    defaults:
-      run:
-        shell: bash
+    outputs:
+      image_tag: ${{ steps.build_image.outputs.image_tag }}
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: ACR login
+        run: az acr login --name ${{ env.ACR_NAME }}
+
+      - name: Build and Push image with unique tag
+        id: build_image
+        run: |
+          IMAGE_TAG=$(git rev-parse --short HEAD)
+          echo "Generated unique image tag: $IMAGE_TAG"
+          IMAGE="${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${IMAGE_TAG}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+  terraform-deploy:
+    name: Deploy Infrastructure via Terraform
+    runs-on: ubuntu-latest
+    needs: build-and-push-image
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Terraform
@@ -43,19 +73,21 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Terraform init/validate/plan
+      - name: Terraform Init
         working-directory: infra
         env:
+          ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
+        run: terraform init -input=false
+
+      - name: Terraform Plan and Apply
+        if: github.ref == 'refs/heads/main'
+        working-directory: infra
+        env:
+          TF_VAR_docker_image_tag: ${{ needs.build-and-push-image.outputs.image_tag }}
           TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
-          TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          TF_VAR_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-          TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          TF_VAR_postgres_host: ""
           TF_VAR_postgres_db: ${{ secrets.POSTGRES_DB }}
           TF_VAR_postgres_user: ${{ secrets.POSTGRES_USER }}
           TF_VAR_postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
-          TF_VAR_postgres_port: "5432"
           TF_VAR_app_admin_email: ${{ secrets.APP_ADMIN_EMAIL }}
           TF_VAR_app_admin_password: ${{ secrets.APP_ADMIN_PASSWORD }}
           TF_VAR_mail_host: ${{ secrets.MAIL_HOST }}
@@ -66,77 +98,6 @@ jobs:
           TF_VAR_jwt_expiration: ${{ secrets.JWT_EXPIRATION }}
           TF_VAR_jwt_refresh_expiration: ${{ secrets.JWT_REFRESH_EXPIRATION }}
         run: |
-          terraform init -input=false
           terraform validate
           terraform plan -input=false -out=tfplan
-
-      - name: Terraform apply (auto-approve on main)
-        if: github.ref == 'refs/heads/main'
-        working-directory: infra
-        run: terraform apply -input=false -auto-approve tfplan
-
-  build-and-push-image:
-    name: Build and push image to ACR
-    runs-on: ubuntu-latest
-    needs: terraform-plan-apply
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Azure login (OIDC)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: ACR login
-        run: az acr login --name ${{ env.ACR_NAME }}
-
-      - name: Build and push image
-        run: |
-          IMAGE_TAG=${{ env.IMAGE_TAG }}
-          IMAGE="${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${IMAGE_TAG}"
-          docker build -t "$IMAGE" .
-          docker push "$IMAGE"
-
-  deploy-webapp:
-    name: Deploy to Azure Web App
-    runs-on: ubuntu-latest
-    needs: build-and-push-image
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Azure login (OIDC)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Discover Web App name
-        id: getwebapp
-        run: |
-          # The webapp is created with random suffix; find it in the RG
-          WEBAPP_NAME=$(az webapp list -g "${{ env.AZURE_RESOURCE_GROUP }}" --query "[?contains(name, '${{ env.WEBAPP_NAME_PREFIX }}')].name | [0]" -o tsv)
-          echo "webapp=$WEBAPP_NAME" >> $GITHUB_OUTPUT
-
-      - name: Configure Web App to use ACR image
-        run: |
-          WEBAPP_NAME=${{ steps.getwebapp.outputs.webapp }}
-          if [ -z "$WEBAPP_NAME" ]; then
-            echo "Web App not found" >&2
-            exit 1
-          fi
-          IMAGE="${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
-          az webapp config container set \
-            --name "$WEBAPP_NAME" \
-            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
-            --docker-custom-image-name "$IMAGE" \
-            --docker-registry-server-url "https://${{ env.ACR_NAME }}.azurecr.io"
-
-
+          terraform apply -input=false -auto-approve tfplan
