@@ -153,6 +153,6 @@ public class BouquetServiceImpl implements BouquetService {
 
     private boolean userHasPermissionToDoRequest() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+        return !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 }

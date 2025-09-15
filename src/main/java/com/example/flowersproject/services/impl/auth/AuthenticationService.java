@@ -13,6 +13,7 @@ import com.example.flowersproject.token.Token;
 import com.example.flowersproject.token.TokenRepository;
 import com.example.flowersproject.token.TokenType;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,10 @@ public class AuthenticationService {
 
         if (userService.userAlreadyExists(request.getEmail())) {
             throw new AuthenticationException("User already exists", request.getEmail());
+        }
+
+        if (!new EmailValidator().isValid(request.getEmail(), null)) {
+            throw new AuthenticationException("Invalid email format", request.getEmail());
         }
 
             var user = UserEntity.builder()
