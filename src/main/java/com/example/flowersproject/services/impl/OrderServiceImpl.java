@@ -6,7 +6,10 @@ import com.example.flowersproject.dto.UserDTO;
 import com.example.flowersproject.entity.order.OrderEntity;
 import com.example.flowersproject.entity.order.OrderItemEntity;
 import com.example.flowersproject.entity.order.OrderStatusEntity;
+import com.example.flowersproject.entity.product.ProductEntity;
 import com.example.flowersproject.repository.OrderRepository;
+import com.example.flowersproject.repository.ProductRepository;
+import com.example.flowersproject.repository.UserRepository;
 import com.example.flowersproject.services.OrderService;
 import com.example.flowersproject.services.util.OrderServiceHelper;
 import com.example.flowersproject.services.mappers.OrderMapper;
@@ -29,25 +32,54 @@ public class OrderServiceImpl implements OrderService {
     private final UserMapper userMapper;
     private final OrderRepository orderRepository;
     private final OrderServiceHelper orderServiceHelper;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ResponseEntity<?> createOrder(UserDTO user, List<ProductDTO> products) {
         try {
+            if (user == null) {
+                return ResponseEntity.badRequest().body("User information is required");
+            }
+            if (products == null || products.isEmpty()) {
+                return ResponseEntity.badRequest().body("Products list cannot be empty");
+            }
+
             OrderEntity orderEntity = new OrderEntity();
 
-            orderEntity.setUser(userMapper.userDtoToEntity(user));
+            var userEntity = userRepository.findById(user.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found: id=" + user.getId()));
+            orderEntity.setUser(userEntity);
             orderEntity.setOrderDate(new Date());
 
-            List<OrderItemEntity> orderItems = orderMapper.mapProductEntitiesToOrderItems(orderEntity, products);
+            // Build order items from authoritative DB product data; ignore client-sent prices
+            List<OrderItemEntity> orderItems = products.stream().map(requestProduct -> {
+                Long productId = requestProduct.getId();
+                ProductEntity dbProduct = productRepository.findById(productId)
+                        .orElseThrow(() -> new IllegalArgumentException("Product not found: id=" + productId));
+
+                OrderItemEntity orderItem = new OrderItemEntity();
+                orderItem.setOrder(orderEntity);
+                orderItem.setProductId(dbProduct.getId());
+                orderItem.setName(dbProduct.getName());
+                orderItem.setDescription(dbProduct.getDescription());
+                orderItem.setPrice(dbProduct.getPrice());
+                orderItem.setCount(requestProduct.getCount());
+                var image = dbProduct.getImage();
+                if (image != null) {
+                    orderItem.setImageId(image.getImageId());
+                }
+                orderItem.setAvailable(dbProduct.getAvailable());
+                return orderItem;
+            }).toList();
             orderEntity.setOrderItems(orderItems);
 
             orderEntity.setOrderStatus(OrderStatusEntity.IN_PROCESS);
 
-            orderEntity.setTotalPrice(orderServiceHelper.calculateTotalPrice(products));
+            // Calculate total from server-side items (price * count)
+            orderEntity.setTotalPrice(orderServiceHelper.calculateTotalPrice(orderItems));
 
             OrderEntity savedOrder = orderRepository.save(orderEntity);
-
-            orderRepository.save(orderEntity);
             return ResponseEntity.status(HttpStatus.CREATED).body(orderMapper.orderToDto(savedOrder));
         } catch (HttpMessageNotReadableException e) {
             return ResponseEntity.badRequest().body("Failed to create order: Invalid JSON format");
@@ -65,10 +97,17 @@ public class OrderServiceImpl implements OrderService {
             if (optionalOrder.isPresent()) {
                 OrderEntity existingOrder = optionalOrder.get();
 
-                existingOrder.setUser(userMapper.userDtoToEntity(order.getUser()));
+                if (order.getUser() != null && order.getUser().getId() != null) {
+                    var userEntity = userRepository.findById(order.getUser().getId())
+                            .orElseThrow(() -> new IllegalArgumentException("User not found: id=" + order.getUser().getId()));
+                    existingOrder.setUser(userEntity);
+                }
                 existingOrder.setOrderDate(order.getOrderDate());
                 existingOrder.setOrderStatus(OrderStatusEntity.valueOf(order.getOrderStatus()));
-                existingOrder.setTotalPrice(order.getTotalPrice());
+                // Ignore client-sent totalPrice; recompute from existing order items
+                if (existingOrder.getOrderItems() != null) {
+                    existingOrder.setTotalPrice(orderServiceHelper.calculateTotalPrice(existingOrder.getOrderItems()));
+                }
 
                 OrderEntity updatedOrder = orderRepository.save(existingOrder);
 
@@ -96,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<?> getOrdersForUser(Long userId) {
+    public ResponseEntity<?> getOrdersForUser(Integer userId) {
         try {
             List<OrderEntity> userOrders = orderRepository.findByUserId(userId);
             if (userOrders.isEmpty()) {

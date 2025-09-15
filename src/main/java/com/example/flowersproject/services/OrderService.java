@@ -13,7 +13,7 @@ public interface OrderService {
     ResponseEntity<?> getOrderById(Long orderId);
     ResponseEntity<?> updateOrder( Long orderId, OrderDTO order);
     ResponseEntity<?> deleteOrderById(Long orderId);
-    ResponseEntity<?> getOrdersForUser(Long userId);
+    ResponseEntity<?> getOrdersForUser(Integer userId);
     ResponseEntity<?> getAllOrders();
     ResponseEntity<?> changeOrderStatus(Long orderId, OrderStatusEntity newStatus);
 }

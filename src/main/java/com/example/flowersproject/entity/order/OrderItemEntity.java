@@ -21,6 +21,8 @@ public class OrderItemEntity {
     private double price;
     private int count;
     private int imageId;
+    private Long productId; // reference to the original product
+    private String available; // snapshot at order time
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)

@@ -12,5 +12,5 @@ public class OrderDTO {
     private String orderStatus;
     private List<ProductDTO> orderItems;
     private Date orderDate;
-    private double totalPrice;
+    private double totalPrice; // Server-computed; client input ignored
 }

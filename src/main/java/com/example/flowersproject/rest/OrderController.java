@@ -21,6 +21,12 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest request) {
+        if (request.getUser() == null) {
+            return ResponseEntity.badRequest().body("User information is required");
+        }
+        if (request.getProducts() == null || request.getProducts().isEmpty()) {
+            return ResponseEntity.badRequest().body("Products list cannot be empty");
+        }
         return orderService.createOrder(request.getUser(), request.getProducts());
     }
 
@@ -42,12 +48,12 @@ public class OrderController {
         }
     }
     @DeleteMapping("/{orderId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteOrderById(@PathVariable Long orderId) {
             return orderService.deleteOrderById(orderId);
     }
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getOrdersForUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity<?> getOrdersForUser(@PathVariable("userId") Integer userId) {
             var orders = orderService.getOrdersForUser(userId);
             return ResponseEntity.ok(orders);
     }
