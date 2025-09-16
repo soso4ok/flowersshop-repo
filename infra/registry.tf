@@ -5,3 +5,8 @@ resource "azurerm_container_registry" "acr" {
   sku                 = "Basic"
   admin_enabled       = false
 }
+
+output "acr_name" {
+  description = "The name of the Azure Container Registry."
+  value       = azurerm_container_registry.acr.name
+}
