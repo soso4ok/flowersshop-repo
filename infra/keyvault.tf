@@ -16,6 +16,22 @@ resource "azurerm_key_vault" "kv_my_project_x3f8a1" {
   }
 }
 
+resource "azurerm_key_vault_access_policy" "terraform_access" {
+  key_vault_id = azurerm_key_vault.kv_my_project_x3f8a1.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
+
+  secret_permissions = [
+    "Get",
+    "List",
+    "Set",
+    "Delete",
+    "Recover",
+    "Backup",
+    "Restore"
+  ]
+}
+
 
 # Vars
 resource "azurerm_key_vault_secret" "back_end_secrets" {
