@@ -57,6 +57,12 @@ jobs:
       id-token: write
       contents: read
 
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -100,4 +106,4 @@ jobs:
         run: |
           terraform validate
           terraform plan -input=false -out=tfplan
-          terraform apply -input=false -auto-approve tfplan
+          terraform apply -input=false -auto-approve tfplan```
