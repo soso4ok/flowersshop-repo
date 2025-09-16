@@ -12,11 +12,6 @@ variable "location" {
 # Back-end vars
 
 # PostgreSQL
-variable "postgres_host" {
-  description = "The hostname"
-  type        = string
-  sensitive   = true
-}
 
 variable "postgres_db" {
   description = "The name of the PostgreSQL database."
@@ -105,34 +100,8 @@ variable "jwt_refresh_expiration" {
   default     = "30d"
 }
 
-# Credentials
 
-# variable "current_user_object_id" {
-#   description = "Current user's object ID for Key Vault access"
-#   type        = string
-#   sensitive = true
-# }
 
-variable "client_id" {
-  description = "Azure Client ID"
-  type        = string
-  sensitive   = true
-}
-variable "client_secret" {
-  description = "Azure Client Secret"
-  type        = string
-  sensitive   = true
-}
-variable "tenant_id" {
-  description = "Azure Tenant ID"
-  type        = string
-  sensitive   = true
-}
-variable "subscription_id" {
-  description = "Azure Subscription ID"
-  type        = string
-  sensitive   = true
-}
 
 variable "docker_image_tag" {
   description = "Docker image tag"
