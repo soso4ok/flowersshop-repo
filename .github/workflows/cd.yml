@@ -1,103 +1,101 @@
-#name: Deploy Infrastructure and Application
-#
-#on:
-#  workflow_dispatch:
-#  push:
-#    branches: [ main ]
-#    paths:
-#      - 'Dockerfile'
-#      - 'src/**'
-#      - 'pom.xml'
-#      - 'infra/**'
-#
-#env:
-#  IMAGE_NAME: flowers-back-end
-#  AZURE_RESOURCE_GROUP: flowers-backend-rg-europe
-#
-#jobs:
-#  deploy-all:
-#    name: Build, Deploy Infrastructure and Application
-#    runs-on: ubuntu-latest
-#    permissions:
-#      id-token: write
-#      contents: read
-#
-#    env:
-#      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-#      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-#      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-#      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-#
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v4
-#
-#      - name: Setup Terraform
-#        uses: hashicorp/setup-terraform@v3
-#        with:
-#          terraform_version: 1.5.7
-#
-#      - name: Azure login (OIDC)
-#        uses: azure/login@v2
-#        with:
-#          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-#          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-#          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-#
-#      - name: Terraform Init & Apply (Create Infrastructure)
-#        id: terraform_infra
-#        working-directory: infra
-#        env:
-#          ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
-#          TF_VAR_docker_image_tag: "latest"
-#          TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
-#          TF_VAR_postgres_db: ${{ secrets.POSTGRES_DB }}
-#          TF_VAR_postgres_user: ${{ secrets.POSTGRES_USER }}
-#          TF_VAR_postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
-#          TF_VAR_app_admin_email: ${{ secrets.APP_ADMIN_EMAIL }}
-#          TF_VAR_app_admin_password: ${{ secrets.APP_ADMIN_PASSWORD }}
-#          TF_VAR_mail_host: ${{ secrets.MAIL_HOST }}
-#          TF_VAR_mail_port: ${{ secrets.MAIL_PORT }}
-#          TF_VAR_mail_username: ${{ secrets.MAIL_USERNAME }}
-#          TF_VAR_mail_password: ${{ secrets.MAIL_PASSWORD }}
-#          TF_VAR_jwt_secret: ${{ secrets.JWT_SECRET }}
-#          TF_VAR_jwt_expiration: ${{ secrets.JWT_EXPIRATION }}
-#          TF_VAR_jwt_refresh_expiration: ${{ secrets.JWT_REFRESH_EXPIRATION }}
-#        run: |
-#          terraform init -input=false
-#          terraform apply -input=false -auto-approve
-#          ACR_NAME_OUTPUT=$(terraform output -raw acr_name)
-#          echo "ACR_NAME=$ACR_NAME_OUTPUT" >> $GITHUB_ENV
-#
-#      - name: Build and Push image with unique tag
-#        id: build_image
-#        env:
-#          ACR_NAME: ${{ env.ACR_NAME }}
-#        run: |
-#          az acr login --name ${{ env.ACR_NAME }}
-#          IMAGE_TAG=$(git rev-parse --short HEAD)
-#          echo "Generated unique image tag: $IMAGE_TAG"
-#          IMAGE="${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${IMAGE_TAG}"
-#          docker build -t "$IMAGE" .
-#          docker push "$IMAGE"
-#          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-#
-#      - name: Terraform Apply (Update Image Tag)
-#        working-directory: infra
-#        env:
-#          ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
-#          TF_VAR_docker_image_tag: ${{ steps.build_image.outputs.image_tag }}
-#          TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
-#          TF_VAR_postgres_db: ${{ secrets.POSTGRES_DB }}
-#          TF_VAR_postgres_user: ${{ secrets.POSTGRES_USER }}
-#          TF_VAR_postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
-#          TF_VAR_app_admin_email: ${{ secrets.APP_ADMIN_EMAIL }}
-#          TF_VAR_app_admin_password: ${{ secrets.APP_ADMIN_PASSWORD }}
-#          TF_VAR_mail_host: ${{ secrets.MAIL_HOST }}
-#          TF_VAR_mail_port: ${{ secrets.MAIL_PORT }}
-#          TF_VAR_mail_username: ${{ secrets.MAIL_USERNAME }}
-#          TF_VAR_mail_password: ${{ secrets.MAIL_PASSWORD }}
-#          TF_VAR_jwt_secret: ${{ secrets.JWT_SECRET }}
-#          TF_VAR_jwt_expiration: ${{ secrets.JWT_EXPIRATION }}
-#          TF_VAR_jwt_refresh_expiration: ${{ secrets.JWT_REFRESH_EXPIRATION }}
-#        run: terraform apply -input=false -auto-approve
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'Dockerfile'
+      - 'src/**'
+      - 'pom.xml'
+      - 'infra/**'
+
+env:
+  IMAGE_NAME: flowers-back-end
+  AZURE_RESOURCE_GROUP: flowers-backend-rg-europe
+
+jobs:
+  deploy-all:
+    name: Build, Deploy Infrastructure and Application
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform Init & Apply (Create Infrastructure)
+        id: terraform_infra
+        working-directory: infra
+        env:
+          ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
+          TF_VAR_docker_image_tag: "latest"
+          TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
+          TF_VAR_postgres_db: ${{ secrets.POSTGRES_DB }}
+          TF_VAR_postgres_user: ${{ secrets.POSTGRES_USER }}
+          TF_VAR_postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
+          TF_VAR_app_admin_email: ${{ secrets.APP_ADMIN_EMAIL }}
+          TF_VAR_app_admin_password: ${{ secrets.APP_ADMIN_PASSWORD }}
+          TF_VAR_mail_host: ${{ secrets.MAIL_HOST }}
+          TF_VAR_mail_port: ${{ secrets.MAIL_PORT }}
+          TF_VAR_mail_username: ${{ secrets.MAIL_USERNAME }}
+          TF_VAR_mail_password: ${{ secrets.MAIL_PASSWORD }}
+          TF_VAR_jwt_secret: ${{ secrets.JWT_SECRET }}
+          TF_VAR_jwt_expiration: ${{ secrets.JWT_EXPIRATION }}
+          TF_VAR_jwt_refresh_expiration: ${{ secrets.JWT_REFRESH_EXPIRATION }}
+        run: |
+          terraform init -input=false
+          terraform apply -input=false -auto-approve
+          ACR_NAME_OUTPUT=$(terraform output -raw acr_name)
+          echo "ACR_NAME=$ACR_NAME_OUTPUT" >> $GITHUB_ENV
+
+      - name: Build and Push image with unique tag
+        id: build_image
+        env:
+          ACR_NAME: ${{ env.ACR_NAME }}
+        run: |
+          az acr login --name ${{ env.ACR_NAME }}
+          IMAGE_TAG=$(git rev-parse --short HEAD)
+          echo "Generated unique image tag: $IMAGE_TAG"
+          IMAGE="${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${IMAGE_TAG}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Terraform Apply (Update Image Tag)
+        working-directory: infra
+        env:
+          ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
+          TF_VAR_docker_image_tag: ${{ steps.build_image.outputs.image_tag }}
+          TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
+          TF_VAR_postgres_db: ${{ secrets.POSTGRES_DB }}
+          TF_VAR_postgres_user: ${{ secrets.POSTGRES_USER }}
+          TF_VAR_postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
+          TF_VAR_app_admin_email: ${{ secrets.APP_ADMIN_EMAIL }}
+          TF_VAR_app_admin_password: ${{ secrets.APP_ADMIN_PASSWORD }}
+          TF_VAR_mail_host: ${{ secrets.MAIL_HOST }}
+          TF_VAR_mail_port: ${{ secrets.MAIL_PORT }}
+          TF_VAR_mail_username: ${{ secrets.MAIL_USERNAME }}
+          TF_VAR_mail_password: ${{ secrets.MAIL_PASSWORD }}
+          TF_VAR_jwt_secret: ${{ secrets.JWT_SECRET }}
+          TF_VAR_jwt_expiration: ${{ secrets.JWT_EXPIRATION }}
+          TF_VAR_jwt_refresh_expiration: ${{ secrets.JWT_REFRESH_EXPIRATION }}
+        run: terraform apply -input=false -auto-approve
