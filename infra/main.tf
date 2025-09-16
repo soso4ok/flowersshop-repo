@@ -21,11 +21,8 @@ provider "azurerm" {
   }
 }
 
-# Random string for unique
-resource "random_string" "suffix" {
-  length  = 8
-  special = false
-  upper   = false
+resource "random_pet" "suffix" {
+  length = 2
 }
 
 # Resource Group

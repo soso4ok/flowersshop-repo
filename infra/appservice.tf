@@ -1,5 +1,5 @@
 resource "azurerm_service_plan" "back_end" {
-    name                = "flowers-appserviceplan-${random_string.suffix.result}"
+    name                = "flowers-appserviceplan-${random_pet.suffix.id}"
     location            = var.location
     resource_group_name = azurerm_resource_group.flowers_back-end-rg.name
 
@@ -9,7 +9,7 @@ resource "azurerm_service_plan" "back_end" {
 
 
 resource "azurerm_linux_web_app" "java_back_end_17" {
-  name                = "flowers-webapp-${random_string.suffix.result}"
+  name                = "flowers-webapp-${random_pet.suffix.id}"
   location            = var.location
   resource_group_name = azurerm_resource_group.flowers_back-end-rg.name
   service_plan_id     = azurerm_service_plan.back_end.id

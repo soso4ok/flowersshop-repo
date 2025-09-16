@@ -54,6 +54,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      actions: write
 
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -83,9 +84,13 @@ jobs:
           ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCESS_KEY }}
         run: terraform init -input=false
 
-      - name: Terraform Validate and Plan
-        id: plan
+      - name: Terraform Validate
         working-directory: infra
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: infra
+        id: plan
         env:
           TF_VAR_docker_image_tag: ${{ needs.build-and-push-image.outputs.image_tag }}
           TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
@@ -101,9 +106,13 @@ jobs:
           TF_VAR_jwt_secret: ${{ secrets.JWT_SECRET }}
           TF_VAR_jwt_expiration: ${{ secrets.JWT_EXPIRATION }}
           TF_VAR_jwt_refresh_expiration: ${{ secrets.JWT_REFRESH_EXPIRATION }}
-        run: |
-          terraform validate
-          terraform plan -input=false -out=tfplan
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: infra/tfplan
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
