@@ -1,5 +1,5 @@
 resource "azurerm_key_vault" "kv_my_project_x3f8a1" {
-  name                        = "kvflowersshop${random_pet.suffix.id}"
+  name                        = substr("kvflowers${random_pet.suffix.id}", 0, 24)
   location                    = var.location
   resource_group_name         = azurerm_resource_group.flowers_back-end-rg.name
   tenant_id                   = data.azurerm_client_config.current.tenant_id

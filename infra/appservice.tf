@@ -4,7 +4,7 @@ resource "azurerm_service_plan" "back_end" {
     resource_group_name = azurerm_resource_group.flowers_back-end-rg.name
 
     os_type  = "Linux"
-    sku_name = "S1"
+    sku_name = "F1"
   }
 
 
