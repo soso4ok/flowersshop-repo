@@ -1,5 +1,13 @@
+variable "name_prefix" {
+  description = "Deterministic name prefix for resources"
+  type        = string
+  default     = "flowers-backend"
+}
+
 variable "resource_group_name" {
-  default = "flowers-backend-rg-europe"
+  description = "Azure Resource Group name"
+  type        = string
+  default     = "flowers-backend-rg-europe"
 }
 
 variable "location" {

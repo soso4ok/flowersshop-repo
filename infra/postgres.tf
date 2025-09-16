@@ -1,6 +1,6 @@
 resource "azurerm_postgresql_flexible_server" "psql" {
-  name                   = "postgresql-flex-server-1"
-  resource_group_name    = azurerm_resource_group.flowers_back-end-rg.name
+  name                   = "${var.name_prefix}-psql"
+  resource_group_name    = azurerm_resource_group.backend_rg.name
   location               = var.location
 
   administrator_login    = var.postgres_user

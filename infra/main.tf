@@ -4,10 +4,6 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.0.2"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.1.0"
-    }
   }
 
   required_version = ">= 1.1.0"
@@ -21,12 +17,8 @@ provider "azurerm" {
   }
 }
 
-resource "random_pet" "suffix" {
-  length = 2
-}
-
 # Resource Group
-resource "azurerm_resource_group" "flowers_back-end-rg" {
+resource "azurerm_resource_group" "backend_rg" {
   name     = var.resource_group_name
   location = var.location
 

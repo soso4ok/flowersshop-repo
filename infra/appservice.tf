@@ -1,18 +1,18 @@
-resource "azurerm_service_plan" "back_end" {
-    name                = "flowers-appserviceplan-${random_pet.suffix.id}"
+resource "azurerm_service_plan" "app_service_plan" {
+    name                = "${var.name_prefix}-appserviceplan"
     location            = var.location
-    resource_group_name = azurerm_resource_group.flowers_back-end-rg.name
+    resource_group_name = azurerm_resource_group.backend_rg.name
 
     os_type  = "Linux"
-    sku_name = "F1"
+    sku_name = "S1"
   }
 
 
-resource "azurerm_linux_web_app" "java_back_end_17" {
-  name                = "flowers-webapp-${random_pet.suffix.id}"
+resource "azurerm_linux_web_app" "backend_app" {
+  name                = "${var.name_prefix}-webapp"
   location            = var.location
-  resource_group_name = azurerm_resource_group.flowers_back-end-rg.name
-  service_plan_id     = azurerm_service_plan.back_end.id
+  resource_group_name = azurerm_resource_group.backend_rg.name
+  service_plan_id     = azurerm_service_plan.app_service_plan.id
 
   site_config {
     application_stack {
@@ -54,7 +54,7 @@ resource "azurerm_linux_web_app" "java_back_end_17" {
 resource "azurerm_role_assignment" "acr_pull_for_app_service" {
   scope                = azurerm_container_registry.acr.id
   role_definition_name = "AcrPull"
-  principal_id         = azurerm_linux_web_app.java_back_end_17.identity[0].principal_id
+  principal_id         = azurerm_linux_web_app.backend_app.identity[0].principal_id
 }
 
 
