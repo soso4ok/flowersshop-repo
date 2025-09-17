@@ -6,6 +6,8 @@ resource "azurerm_key_vault" "kv" {
   sku_name                    = "standard"
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
+
+  access_policy = []
 }
 
 data "azurerm_client_config" "current" {}
@@ -19,6 +21,10 @@ resource "azurerm_key_vault_access_policy" "terraform_runner_policy" {
   secret_permissions = [
     "Get", "List", "Set", "Delete", "Purge", "Recover"
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "azurerm_key_vault_access_policy" "back_end_access_policy" {
