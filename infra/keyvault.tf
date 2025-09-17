@@ -65,6 +65,15 @@ resource "azurerm_key_vault_secret" "secrets" {
   content_type= each.value.content_type
 
   depends_on  = [
+    time_sleep.wait_for_policy_propagation
+  ]
+}
+
+
+resource "time_sleep" "wait_for_policy_propagation" {
+  depends_on = [
     azurerm_key_vault_access_policy.terraform_runner_policy
   ]
+
+  create_duration = "60s"
 }
