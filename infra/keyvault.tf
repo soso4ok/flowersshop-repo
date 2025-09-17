@@ -58,10 +58,13 @@ locals {
 }
 
 resource "azurerm_key_vault_secret" "secrets" {
-  for_each = local.key_vault_secrets
+  for_each    = local.key_vault_secrets
+  name        = each.key
+  value       = each.value.value
+  key_vault_id= azurerm_key_vault.kv.id
+  content_type= each.value.content_type
 
-  name         = each.key
-  value        = each.value.value
-  key_vault_id = azurerm_key_vault.kv.id
-  content_type = each.value.content_type
+  depends_on  = [
+    azurerm_key_vault_access_policy.terraform_runner_policy
+  ]
 }
