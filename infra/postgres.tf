@@ -9,6 +9,7 @@ resource "azurerm_postgresql_flexible_server" "psql" {
   sku_name               = "B_Standard_B1ms"
   storage_mb             = 32768
   version                = "13"
+  zone                   = "1"
 
   delegated_subnet_id    = azurerm_subnet.postgres_subnet.id
   private_dns_zone_id    = azurerm_private_dns_zone.private_dns_zone.id
