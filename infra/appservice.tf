@@ -16,12 +16,10 @@ resource "azurerm_linux_web_app" "backend_app" {
 
 
   site_config {
-
-    acr_use_managed_identity_credentials = true
-
+    container_registry_use_managed_identity = true
     application_stack {
-      docker_image     = "${azurerm_container_registry.acr.login_server}/flowers-back-end"
-      docker_image_tag = var.docker_image_tag
+      docker_registry_url = "https://${azurerm_container_registry.acr.login_server}"
+      docker_image_name   = "flowers-back-end:${var.docker_image_tag}"
     }
   }
 
