@@ -1,3 +1,5 @@
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_key_vault" "kv" {
   name                        = substr(replace("kv-${var.name_prefix}", "-", ""), 0, 24)
   location                    = var.location
@@ -7,35 +9,20 @@ resource "azurerm_key_vault" "kv" {
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
 
-  access_policy = []
+  enable_rbac_authorization = true
 }
 
-data "azurerm_client_config" "current" {}
 
-
-resource "azurerm_key_vault_access_policy" "terraform_runner_policy" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
-
-  secret_permissions = [
-    "Get", "List", "Set", "Delete", "Purge", "Recover"
-  ]
-
-  lifecycle {
-    create_before_destroy = true
-  }
+resource "azurerm_role_assignment" "terraform_runner_kv_permissions" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
-resource "azurerm_key_vault_access_policy" "back_end_access_policy" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = azurerm_linux_web_app.backend_app.identity[0].tenant_id
-  object_id    = azurerm_linux_web_app.backend_app.identity[0].principal_id
-
-  secret_permissions = [
-    "Get",
-    "List",
-  ]
+resource "azurerm_role_assignment" "back_end_kv_permissions" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_linux_web_app.backend_app.identity[0].principal_id
 }
 
 locals {
@@ -58,22 +45,13 @@ locals {
 }
 
 resource "azurerm_key_vault_secret" "secrets" {
-  for_each    = local.key_vault_secrets
-  name        = each.key
-  value       = each.value.value
-  key_vault_id= azurerm_key_vault.kv.id
-  content_type= each.value.content_type
+  for_each     = local.key_vault_secrets
+  name         = each.key
+  value        = each.value.value
+  key_vault_id = azurerm_key_vault.kv.id
+  content_type = each.value.content_type
 
-  depends_on  = [
-    time_sleep.wait_for_policy_propagation
-  ]
-}
-
-
-resource "time_sleep" "wait_for_policy_propagation" {
   depends_on = [
-    azurerm_key_vault_access_policy.terraform_runner_policy
+    azurerm_role_assignment.terraform_runner_kv_permissions
   ]
-
-  create_duration = "60s"
 }
