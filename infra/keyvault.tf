@@ -13,11 +13,6 @@ resource "azurerm_key_vault" "kv" {
 }
 
 
-resource "azurerm_role_assignment" "terraform_runner_kv_permissions" {
-  scope                = azurerm_key_vault.kv.id
-  role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = data.azurerm_client_config.current.object_id
-}
 
 resource "azurerm_role_assignment" "back_end_kv_permissions" {
   scope                = azurerm_key_vault.kv.id
@@ -51,7 +46,4 @@ resource "azurerm_key_vault_secret" "secrets" {
   key_vault_id = azurerm_key_vault.kv.id
   content_type = each.value.content_type
 
-  depends_on = [
-    azurerm_role_assignment.terraform_runner_kv_permissions
-  ]
 }
