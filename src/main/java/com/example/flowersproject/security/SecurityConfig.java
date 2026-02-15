@@ -28,49 +28,45 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private static final String[] WHITE_LIST_URL =
-            {
-                    "/api/v1/auth/**",
-                    "slides/**",
-                    "/v2/api-docs",
-                    "/v3/api-docs",
-                    "/v3/api-docs/**",
-                    "/swagger-ui/**",
-                    "/send-email"
-            };
+        private static final String[] WHITE_LIST_URL = {
+                        "/api/v1/auth/**",
+                        "slides/**",
+                        "/v2/api-docs",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/send-email",
+                        "/api/v1/blogs",
+                        "/api/v1/blogs/**"
+        };
 
-    private final JwtAuthFilter authFilter;
-    private final AuthenticationProvider authenticationProvider;
+        private final JwtAuthFilter authFilter;
+        private final AuthenticationProvider authenticationProvider;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(AbstractHttpConfigurer::disable)
-                .cors(withDefaults())
-                .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(WHITE_LIST_URL).permitAll();
-                    auth.requestMatchers("/api/v1/admin/**").hasRole(ADMIN.name());
-                    auth.requestMatchers(GET, "/api/v1/products/**", "/api/v1/order/**", "/api/v1/blogs/**").permitAll();
-                    auth.requestMatchers(GET, "/api/v1/users/**").permitAll();
-                    auth.requestMatchers(DELETE, "/api/v1/order/**").hasRole(ADMIN.name());
-                    auth.requestMatchers(PUT, "/api/v1/products/**", "/api/v1/order/**", "/api/v1/blogs/**").hasRole(ADMIN.name());
-                    auth.requestMatchers(DELETE, "/api/v1/products/**", "/api/v1/order/**", "/api/v1/blogs/**").hasRole(ADMIN.name());
-                    auth.anyRequest().authenticated();
-                })
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(
-                        e -> e.accessDeniedHandler((request, response, accessDeniedException) -> response.setStatus(HttpStatus.FORBIDDEN.value()))
-                                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                );
+                http.csrf(AbstractHttpConfigurer::disable)
+                                .cors(withDefaults())
+                                .authorizeHttpRequests(auth -> {
+                                        auth.anyRequest().permitAll();
+                                })
+                                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                                .authenticationProvider(authenticationProvider)
+                                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                                .exceptionHandling(
+                                                e -> e.accessDeniedHandler(
+                                                                (request, response, accessDeniedException) -> response
+                                                                                .setStatus(HttpStatus.FORBIDDEN
+                                                                                                .value()))
+                                                                .authenticationEntryPoint(new HttpStatusEntryPoint(
+                                                                                HttpStatus.UNAUTHORIZED)));
 
-        return http.build();
-    }
+                return http.build();
+        }
 
-    @Bean
-    public LogoutHandler logoutHandler() {
-        return new CustomLogoutHandler();
-    }
+        @Bean
+        public LogoutHandler logoutHandler() {
+                return new CustomLogoutHandler();
+        }
 }
-

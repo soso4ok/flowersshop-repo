@@ -1,8 +1,10 @@
 package com.example.flowersproject.services.impl;
 
 import com.example.flowersproject.dto.UserDTO;
+import com.example.flowersproject.entity.product.ProductEntity;
 import com.example.flowersproject.entity.user.UserEntity;
 import com.example.flowersproject.entity.user.UserRole;
+import com.example.flowersproject.repository.ProductRepository;
 import com.example.flowersproject.repository.UserRepository;
 import com.example.flowersproject.security.JwtService;
 import com.example.flowersproject.services.UserService;
@@ -21,6 +23,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +37,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
     private final UserMapper userMapper;
+    private final ProductRepository productRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -74,18 +81,71 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
-                .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Override
     public void updateUserRole(String email, UserRole newRole) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = authentication != null && authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        boolean isAdmin = authentication != null
+                && authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         if (!isAdmin) {
             throw new AccessDeniedException("Only admin can update roles");
         }
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         user.setRole(newRole);
         userRepository.save(user);
+    }
+
+    @Override
+    public void changePassword(String email, String oldPassword, String newPassword) {
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<ProductEntity> getFavorites(Integer userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return user.getFavorites();
+    }
+
+    @Override
+    @Transactional
+    public void addFavorite(Integer userId, Long productId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        ProductEntity product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        user.getFavorites().add(product);
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void removeFavorite(Integer userId, Long productId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.getFavorites().removeIf(p -> p.getId().equals(productId));
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Long> getFavoriteIds(Integer userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return user.getFavorites().stream()
+                .map(ProductEntity::getId)
+                .collect(Collectors.toSet());
     }
 }
