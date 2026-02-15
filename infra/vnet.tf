@@ -22,7 +22,6 @@ resource "azurerm_subnet" "postgres_subnet" {
   }
 }
 
-# Subnet for App Service VNet Integration
 resource "azurerm_subnet" "app_service_subnet" {
   name                 = "${var.name_prefix}-appservice-subnet"
   resource_group_name  = azurerm_resource_group.backend_rg.name
@@ -33,19 +32,16 @@ resource "azurerm_subnet" "app_service_subnet" {
     name = "appservice-delegation"
     service_delegation {
       name    = "Microsoft.Web/serverFarms"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"] # Fixed action
     }
   }
 }
 
-
-# Private DNS Zone for PostgreSQL
 resource "azurerm_private_dns_zone" "private_dns_zone" {
   name                = "privatelink.postgres.database.azure.com"
   resource_group_name = azurerm_resource_group.backend_rg.name
 }
 
-# Link VNet to Private DNS Zone
 resource "azurerm_private_dns_zone_virtual_network_link" "dns_zone_link" {
   name                  = "${var.name_prefix}-dns-link"
   resource_group_name   = azurerm_resource_group.backend_rg.name
@@ -53,8 +49,9 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns_zone_link" {
   virtual_network_id    = azurerm_virtual_network.vnet.id
 }
 
-# VNet Integration for App Service
 resource "azurerm_app_service_virtual_network_swift_connection" "app_vnet_integration" {
   app_service_id = azurerm_linux_web_app.backend_app.id
   subnet_id      = azurerm_subnet.app_service_subnet.id
+
+  depends_on = [azurerm_linux_web_app.backend_app]
 }

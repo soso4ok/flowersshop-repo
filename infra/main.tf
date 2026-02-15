@@ -31,4 +31,3 @@ resource "azurerm_resource_group" "backend_rg" {
     Team        = "Back-end"
   }
 }
-
