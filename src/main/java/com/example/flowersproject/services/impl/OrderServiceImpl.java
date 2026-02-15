@@ -2,7 +2,6 @@ package com.example.flowersproject.services.impl;
 
 import com.example.flowersproject.dto.OrderDTO;
 import com.example.flowersproject.dto.ProductDTO;
-import com.example.flowersproject.dto.UserDTO;
 import com.example.flowersproject.entity.order.OrderEntity;
 import com.example.flowersproject.entity.order.OrderItemEntity;
 import com.example.flowersproject.entity.order.OrderStatusEntity;
@@ -36,23 +35,21 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<?> createOrder(UserDTO user, List<ProductDTO> products) {
+    public ResponseEntity<?> createOrder(String email, List<ProductDTO> products) {
         try {
-            if (user == null) {
-                return ResponseEntity.badRequest().body("User information is required");
-            }
             if (products == null || products.isEmpty()) {
                 return ResponseEntity.badRequest().body("Products list cannot be empty");
             }
 
             OrderEntity orderEntity = new OrderEntity();
 
-            var userEntity = userRepository.findById(user.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found: id=" + user.getId()));
+            var userEntity = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found: " + email));
             orderEntity.setUser(userEntity);
             orderEntity.setOrderDate(new Date());
 
-            // Build order items from authoritative DB product data; ignore client-sent prices
+            // Build order items from authoritative DB product data; ignore client-sent
+            // prices
             List<OrderItemEntity> orderItems = products.stream().map(requestProduct -> {
                 Long productId = requestProduct.getId();
                 ProductEntity dbProduct = productRepository.findById(productId)
@@ -99,7 +96,8 @@ public class OrderServiceImpl implements OrderService {
 
                 if (order.getUser() != null && order.getUser().getId() != null) {
                     var userEntity = userRepository.findById(order.getUser().getId())
-                            .orElseThrow(() -> new IllegalArgumentException("User not found: id=" + order.getUser().getId()));
+                            .orElseThrow(() -> new IllegalArgumentException(
+                                    "User not found: id=" + order.getUser().getId()));
                     existingOrder.setUser(userEntity);
                 }
                 existingOrder.setOrderDate(order.getOrderDate());
@@ -137,14 +135,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ResponseEntity<?> getOrdersForUser(Integer userId) {
         try {
-            List<OrderEntity> userOrders = orderRepository.findByUserId(userId);
+            List<OrderEntity> userOrders = orderRepository.findByUser_Id(userId);
             if (userOrders.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders found for the user");
             }
             List<OrderDTO> orderDTOs = orderMapper.orderToDtoList(userOrders);
             return ResponseEntity.ok(orderDTOs);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to fetch orders for the user: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to fetch orders for the user: " + e.getMessage());
         }
     }
 

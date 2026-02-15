@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -20,46 +21,47 @@ public class OrderController {
     private final OrderServiceImpl orderService;
 
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest request) {
-        if (request.getUser() == null) {
-            return ResponseEntity.badRequest().body("User information is required");
-        }
+    public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest request,
+            Principal principal) {
         if (request.getProducts() == null || request.getProducts().isEmpty()) {
             return ResponseEntity.badRequest().body("Products list cannot be empty");
         }
-        return orderService.createOrder(request.getUser(), request.getProducts());
+        return orderService.createOrder(principal.getName(), request.getProducts());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable("id") Long id) {
-        var orderEntity =
-                orderService.getOrderById(id);
+        var orderEntity = orderService.getOrderById(id);
         return ResponseEntity.ok(orderEntity);
     }
+
     @PutMapping("/{orderId}")
     public ResponseEntity<?> updateOrder(@PathVariable("orderId") Long orderId,
-                                         @RequestBody OrderDTO updatedOrder
-    ) {
+            @RequestBody OrderDTO updatedOrder) {
         try {
             var result = orderService.updateOrder(orderId, updatedOrder);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update order: " + e.getMessage() + orderId);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update order: " + e.getMessage() + orderId);
         }
     }
+
     @DeleteMapping("/{orderId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteOrderById(@PathVariable Long orderId) {
-            return orderService.deleteOrderById(orderId);
+        return orderService.deleteOrderById(orderId);
     }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getOrdersForUser(@PathVariable("userId") Integer userId) {
-            var orders = orderService.getOrdersForUser(userId);
-            return ResponseEntity.ok(orders);
+        var orders = orderService.getOrdersForUser(userId);
+        return ResponseEntity.ok(orders);
     }
+
     @PutMapping("/status/{orderId}")
     public ResponseEntity<?> changeOrderStatus(@PathVariable("orderId") Long orderId,
-                                               @RequestBody Map<String, String> requestBody) {
+            @RequestBody Map<String, String> requestBody) {
         try {
             String newStatusString = requestBody.get("newStatus");
             if (newStatusString == null) {
@@ -73,10 +75,10 @@ public class OrderController {
             return ResponseEntity.badRequest().body("Invalid new status: " + e.getMessage());
         }
     }
+
     @GetMapping("/orders")
     public ResponseEntity<?> getAllOrders() {
         return orderService.getAllOrders();
     }
-
 
 }

@@ -2,13 +2,17 @@ package com.example.flowersproject.services.impl;
 
 import com.example.flowersproject.dto.FlowerDTO;
 import com.example.flowersproject.entity.product.FlowerEntity;
+import com.example.flowersproject.entity.product.FlowerType;
 import com.example.flowersproject.entity.product.ImageEntity;
 import com.example.flowersproject.repository.FlowerRepository;
 import com.example.flowersproject.repository.ImageRepository;
+import com.example.flowersproject.repository.specs.ProductSpecification;
 import com.example.flowersproject.services.FlowerService;
 import com.example.flowersproject.services.mappers.FlowerMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,14 +39,47 @@ public class FlowerServiceImpl implements FlowerService {
 
     @Override
     public ResponseEntity<List<FlowerDTO>> getAllFlowers() {
-        List<FlowerDTO> flowerDTOs =  flowerRepository.findAll().stream()
+        List<FlowerDTO> flowerDTOs = flowerRepository.findAll().stream()
                 .map(flowerEntity -> {
                     FlowerDTO flowerDTO = flowerMapper.flowerToDto(flowerEntity);
                     return flowerDTO;
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(flowerDTOs);
+    }
+
+    @Override
+    public ResponseEntity<List<FlowerDTO>> getAllFlowers(Double minPrice, Double maxPrice, String search, String sortBy,
+            String sortDir, FlowerType type) {
+        // Build specification dynamically
+        Specification<FlowerEntity> spec = Specification.where(null);
+
+        if (minPrice != null) {
+            spec = spec.and(ProductSpecification.hasPriceGreaterThanOrEqual(minPrice));
         }
+        if (maxPrice != null) {
+            spec = spec.and(ProductSpecification.hasPriceLessThanOrEqual(maxPrice));
+        }
+        if (search != null && !search.trim().isEmpty()) {
+            spec = spec.and(ProductSpecification.nameContains(search));
+        }
+        if (type != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("flowerType"), type));
+        }
+
+        // Build sort
+        Sort sort = Sort.unsorted();
+        if (sortBy != null && !sortBy.trim().isEmpty()) {
+            Sort.Direction direction = "desc".equalsIgnoreCase(sortDir) ? Sort.Direction.DESC : Sort.Direction.ASC;
+            sort = Sort.by(direction, sortBy);
+        }
+
+        List<FlowerDTO> flowerDTOs = flowerRepository.findAll(spec, sort).stream()
+                .map(flowerMapper::flowerToDto)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(flowerDTOs);
+    }
 
     @Override
     public ResponseEntity<?> getFlowerById(Long orderId) {
@@ -52,10 +89,9 @@ public class FlowerServiceImpl implements FlowerService {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
     @Override
     public ResponseEntity<?> createFlower(FlowerDTO flowerDTO,
-                                          MultipartFile imageFile) {
+            MultipartFile imageFile) {
 
         if (userService.userHasPermissionToDoRequest()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to create a flower.");
@@ -74,15 +110,15 @@ public class FlowerServiceImpl implements FlowerService {
             flowerDTO.setImage(imageEntity);
             return ResponseEntity.status(HttpStatus.CREATED).body(flowerDTO);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while processing the image.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occurred while processing the image.");
         }
     }
 
-
     @Override
     public ResponseEntity<?> updateFlower(Long flowerId,
-                                          FlowerDTO flowerDTO,
-                                          MultipartFile imageFile) throws IOException {
+            FlowerDTO flowerDTO,
+            MultipartFile imageFile) throws IOException {
 
         if (flowerId == null || flowerId <= 0) {
             return ResponseEntity.badRequest().body("Invalid flowerId");
@@ -113,7 +149,6 @@ public class FlowerServiceImpl implements FlowerService {
         return ResponseEntity.ok(flowerMapper.flowerToDto(flowerEntity));
     }
 
-
     @Override
     public ResponseEntity<?> deleteFlower(Long flowerId) {
 
@@ -142,15 +177,9 @@ public class FlowerServiceImpl implements FlowerService {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting flower: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting flower: " + e.getMessage());
         }
     }
-
-
-
-
-
-
-
 
 }
