@@ -22,9 +22,13 @@ public class BouquetController {
     private final BouquetServiceImpl bouquetService;
 
     @GetMapping
-    public ResponseEntity<List<BouquetDTO>> getAllBouquet() {
-        List<BouquetDTO> list =
-                bouquetService.getAllBouquets();
+    public ResponseEntity<List<BouquetDTO>> getAllBouquet(
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String sortDir) {
+        List<BouquetDTO> list = bouquetService.getAllBouquets(minPrice, maxPrice, search, sortBy, sortDir);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -39,26 +43,22 @@ public class BouquetController {
         }
     }
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> createBouquet(
             @RequestPart("bouquetRequest") BouquetDTO bouquetDTO,
-            @RequestPart("imageFile") MultipartFile imageFile
-    ) {
+            @RequestPart("imageFile") MultipartFile imageFile) {
         var createdResponse = bouquetService.createBouquet(bouquetDTO, imageFile);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdResponse);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateFlower(
             @PathVariable Long id,
             @ModelAttribute BouquetDTO updatedProduct,
-            @RequestParam("imageFile") MultipartFile imageFile
-    ) {
+            @RequestParam("imageFile") MultipartFile imageFile) {
         try {
             var updatedEntity = bouquetService.updateBouquet(id, updatedProduct, imageFile);
-            return updatedEntity != null ?
-                    ResponseEntity.ok(updatedEntity) :
-                    ResponseEntity.notFound().build();
+            return updatedEntity != null ? ResponseEntity.ok(updatedEntity) : ResponseEntity.notFound().build();
         } catch (IOException e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

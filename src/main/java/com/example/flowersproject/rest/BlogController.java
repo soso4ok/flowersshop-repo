@@ -12,8 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/api/v1/blogs")
+@RestController
+@RequestMapping("api/v1/blogs")
 @AllArgsConstructor
 public class BlogController {
 
@@ -31,12 +31,10 @@ public class BlogController {
         return ResponseEntity.ok(blogDTO);
     }
 
-    @PostMapping
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> createBlog(@RequestPart("blogDTO") BlogDTO blogDTO,
-                                        @RequestPart("imageFile") MultipartFile imageFile
-                                              ) {
-        var createdBlog = blogService.createBlog(blogDTO, imageFile);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBlog);
+            @RequestPart("imageFile") MultipartFile imageFile) {
+        return blogService.createBlog(blogDTO, imageFile);
     }
 
     @PutMapping("/{id}")
@@ -50,6 +48,5 @@ public class BlogController {
         blogService.deleteBlog(id);
         return ResponseEntity.noContent().build();
     }
-
 
 }

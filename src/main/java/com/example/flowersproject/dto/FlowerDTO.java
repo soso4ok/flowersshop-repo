@@ -1,5 +1,6 @@
 package com.example.flowersproject.dto;
 
+import com.example.flowersproject.entity.product.FlowerType;
 import com.example.flowersproject.entity.product.ImageEntity;
 import lombok.Data;
 
@@ -15,4 +16,5 @@ public class FlowerDTO {
     private String count;
     private String available;
     private ImageEntity image;
+    private FlowerType flowerType;
 }

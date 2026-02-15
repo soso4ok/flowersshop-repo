@@ -5,11 +5,14 @@ import com.example.flowersproject.entity.product.BouquetEntity;
 import com.example.flowersproject.entity.product.ImageEntity;
 import com.example.flowersproject.repository.BouquetRepository;
 import com.example.flowersproject.repository.ImageRepository;
+import com.example.flowersproject.repository.specs.ProductSpecification;
 import com.example.flowersproject.exceptions.ProductNotFoundException;
 import com.example.flowersproject.services.BouquetService;
 import com.example.flowersproject.services.mappers.BouquetMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -44,6 +47,34 @@ public class BouquetServiceImpl implements BouquetService {
     }
 
     @Override
+    public List<BouquetDTO> getAllBouquets(Double minPrice, Double maxPrice, String search, String sortBy,
+            String sortDir) {
+        // Build specification dynamically
+        Specification<BouquetEntity> spec = Specification.where(null);
+
+        if (minPrice != null) {
+            spec = spec.and(ProductSpecification.hasPriceGreaterThanOrEqual(minPrice));
+        }
+        if (maxPrice != null) {
+            spec = spec.and(ProductSpecification.hasPriceLessThanOrEqual(maxPrice));
+        }
+        if (search != null && !search.trim().isEmpty()) {
+            spec = spec.and(ProductSpecification.nameContains(search));
+        }
+
+        // Build sort
+        Sort sort = Sort.unsorted();
+        if (sortBy != null && !sortBy.trim().isEmpty()) {
+            Sort.Direction direction = "desc".equalsIgnoreCase(sortDir) ? Sort.Direction.DESC : Sort.Direction.ASC;
+            sort = Sort.by(direction, sortBy);
+        }
+
+        return bouquetRepository.findAll(spec, sort).stream()
+                .map(bouquetMapper::toDtoWithFlowerIds)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public BouquetDTO getBouquetById(Long bouquetId) {
         return bouquetRepository.findById(bouquetId)
                 .map(bouquetMapper::toDtoWithFlowerIds)
@@ -60,7 +91,8 @@ public class BouquetServiceImpl implements BouquetService {
                 return ResponseEntity.badRequest().body("Image file is required for bouquet creation");
             }
             if (userHasPermissionToDoRequest()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this flower");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("You don't have permission to delete this flower");
             }
 
             ImageEntity imageEntity = imageService
@@ -77,14 +109,15 @@ public class BouquetServiceImpl implements BouquetService {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(bouquetDTO);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating bouquet - " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating bouquet - " + e.getMessage());
         }
     }
 
     @Override
     public ResponseEntity<?> updateBouquet(Long bouquetId,
-                                           BouquetDTO bouquetDTO,
-                                           MultipartFile imageFile) throws IOException {
+            BouquetDTO bouquetDTO,
+            MultipartFile imageFile) throws IOException {
 
         if (userHasPermissionToDoRequest()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this flower");
@@ -117,7 +150,8 @@ public class BouquetServiceImpl implements BouquetService {
 
             return ResponseEntity.status(HttpStatus.OK).body(bouquetMapper.toDtoWithFlowerIds(bouquetEntity));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating bouquet: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating bouquet: " + e.getMessage());
         }
     }
 
@@ -141,7 +175,8 @@ public class BouquetServiceImpl implements BouquetService {
                 Files.deleteIfExists(Paths.get(IMAGE_DIRECTORY).resolve(image.getFileName()));
                 imageRepository.delete(image);
             } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error deleting image for bouquet: " + bouquetId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Error deleting image for bouquet: " + bouquetId);
             }
 
             bouquetRepository.deleteById(bouquetId);

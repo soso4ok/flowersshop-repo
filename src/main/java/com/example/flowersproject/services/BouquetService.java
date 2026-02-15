@@ -10,9 +10,15 @@ import java.util.List;
 public interface BouquetService {
 
     List<BouquetDTO> getAllBouquets();
+
+    List<BouquetDTO> getAllBouquets(Double minPrice, Double maxPrice, String search, String sortBy, String sortDir);
+
     BouquetDTO getBouquetById(Long bouquetId);
-    ResponseEntity<?>  createBouquet(BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException;
+
+    ResponseEntity<?> createBouquet(BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException;
+
     ResponseEntity<?> deleteBouquet(Long bouquetId);
-    ResponseEntity<?>  updateBouquet(Long bouquetId, BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException;
+
+    ResponseEntity<?> updateBouquet(Long bouquetId, BouquetDTO bouquetDTO, MultipartFile imageFile) throws IOException;
 
 }

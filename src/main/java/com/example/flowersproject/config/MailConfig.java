@@ -32,8 +32,16 @@ public class MailConfig {
         javaMailSender.setPassword(password);
 
         Properties properties = javaMailSender.getJavaMailProperties();
-        properties.put("mail.smtp.starttls.enable", "true");
+
+        // Port 465 requires SSL (not STARTTLS)
+        properties.put("mail.transport.protocol", "smtps");
         properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        properties.put("mail.smtp.socketFactory.port", "465");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.socketFactory.fallback", "false");
+        properties.put("mail.debug", "true"); // Enable debug to see connection details
 
         return javaMailSender;
     }

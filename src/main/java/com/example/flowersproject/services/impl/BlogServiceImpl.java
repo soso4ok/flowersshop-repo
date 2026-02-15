@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,27 +45,30 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public ResponseEntity<?> createBlog(BlogDTO blogDTO, MultipartFile imageFile) {
 
-        if (userService.userHasPermissionToDoRequest()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to create a flower.");
-        }
+        // if (userService.userHasPermissionToDoRequest()) {
+        // return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have
+        // permission to create a flower.");
+        // }
 
         if (imageFile == null || imageFile.isEmpty()) {
             return ResponseEntity.badRequest().body("Image file is required for flower creation.");
         }
 
         try {
-        ImageEntity imageEntity = imageService.uploadImage(imageFile);
+            ImageEntity imageEntity = imageService.uploadImage(imageFile);
 
-        BlogEntity blog = blogMapper.dtoToBlog(blogDTO);
-        blog.setImage(imageEntity);
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa here "+blogDTO);
+            BlogEntity blog = blogMapper.dtoToBlog(blogDTO);
+            blog.setImage(imageEntity);
+            blog.setCreatedAt(new Date());
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa here " + blogDTO);
 
-        blogRepository.save(blog);
+            blogRepository.save(blog);
 
-        blogDTO.setImage(imageEntity);
+            blogDTO.setImage(imageEntity);
             return ResponseEntity.status(HttpStatus.CREATED).body(blogDTO);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while processing the image.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occurred while processing the image.");
         }
     }
 

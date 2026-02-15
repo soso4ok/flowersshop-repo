@@ -23,13 +23,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @AllArgsConstructor
 public class FlowersProjectApplication implements CommandLineRunner {
 
-	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final AdminProperties adminProperties;
 
-	public static void main(String[] args) {
-		SpringApplication.run(FlowersProjectApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FlowersProjectApplication.class, args);
+    }
 
     @Override
     public void run(String... args) {
@@ -40,6 +40,7 @@ public class FlowersProjectApplication implements CommandLineRunner {
                     .email(adminProperties.getEmail())
                     .password(passwordEncoder.encode(adminProperties.getPassword()))
                     .role(UserRole.ADMIN)
+                    .enabled(true) // Admin doesn't need email verification
                     .build());
         }
     }
