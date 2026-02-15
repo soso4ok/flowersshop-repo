@@ -1,16 +1,16 @@
 package com.example.flowersproject.entity.product;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.relational.core.mapping.Table;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
-
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Table(name = "product_table")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class ProductEntity {

@@ -1,73 +1,88 @@
-    package com.example.flowersproject.entity.user;
+package com.example.flowersproject.entity.user;
 
-    import com.example.flowersproject.token.Token;
-    import jakarta.persistence.*;
-    import lombok.AllArgsConstructor;
-    import lombok.Builder;
-    import lombok.Data;
-    import lombok.NoArgsConstructor;
-    import org.hibernate.validator.constraints.UniqueElements;
-    import org.springframework.data.relational.core.mapping.Table;
-    import org.springframework.security.core.GrantedAuthority;
-    import org.springframework.security.core.userdetails.UserDetails;
+import com.example.flowersproject.entity.product.ProductEntity;
+import com.example.flowersproject.token.Token;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-    import java.util.Collection;
-    import java.util.List;
+import java.util.*;
 
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Entity
-    @Table(name = "_user")
-    public class UserEntity implements UserDetails {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "_user")
+public class UserEntity implements UserDetails {
 
-        @Id
-        @GeneratedValue
-        private Integer id;
-        private String firstname;
-        private String lastname;
-        private String email;
-        private String password;
+    @Id
+    @GeneratedValue
+    private Integer id;
+    private String firstname;
+    private String lastname;
+    private String email;
+    private String password;
 
-        @Enumerated(EnumType.STRING)
-        private UserRole role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-        @OneToMany(mappedBy = "userEntity")
-        private List<Token> tokens;
+    @Builder.Default
+    private Boolean enabled = false;
 
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-            return role.getAuthorities();
-        }
+    @OneToMany(mappedBy = "userEntity")
+    private List<Token> tokens;
 
-        @Override
-        public String getPassword() {
-            return password;
-        }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<AddressEntity> addresses = new ArrayList<>();
 
-        @Override
-        public String getUsername() {
-            return email;
-        }
+    @ManyToMany
+    @JoinTable(name = "user_favorites", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @Builder.Default
+    private Set<ProductEntity> favorites = new HashSet<>();
 
-        @Override
-        public boolean isAccountNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isAccountNonLocked() {
-            return true;
-        }
-
-        @Override
-        public boolean isCredentialsNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
     }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled != null && enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+}
