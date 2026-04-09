@@ -37,7 +37,6 @@ public class AuthenticationService {
     @Transactional
     public String register(UserDTO request) {
 
-
         if (userService.userAlreadyExists(request.getEmail())) {
             System.out.println("ERROR: User already exists with email: " + request.getEmail());
             throw new AuthenticationException("User already exists", request.getEmail());
@@ -77,7 +76,7 @@ public class AuthenticationService {
         System.out.println("Confirmation token saved to database");
 
         // Send verification email
-        String link = "http://localhost:5173/verify-email?token=" + token;
+        String link = "https://floralia.studio/verify-email?token=" + token;
         System.out.println("User saved. Attempting to send verification email...");
         System.out.println("Verification link: " + link);
 
