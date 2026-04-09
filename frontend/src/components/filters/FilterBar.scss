@@ -1,0 +1,362 @@
+@import "/src/styles/values.scss";
+
+// =============================================
+// FILTER BAR - MAIN CONTAINER
+// =============================================
+
+.filter-bar {
+    position: sticky;
+    top: 80px; // Below header
+    z-index: 40;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $space-sm 0;
+    margin-bottom: $space-md;
+    background: rgba(249, 248, 244, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(44, 62, 46, 0.06);
+
+    // Hardware acceleration
+    will-change: transform;
+    transform: translateZ(0);
+
+    &__left {
+        flex: 1;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    &__right {
+        display: flex;
+        align-items: center;
+        gap: $space-sm;
+        flex-shrink: 0;
+        padding-left: $space-md;
+    }
+}
+
+// =============================================
+// CATEGORY PILLS
+// =============================================
+
+.category-pills {
+    display: flex;
+    gap: 12px;
+    white-space: nowrap;
+}
+
+.category-pill {
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid rgba(44, 62, 46, 0.2);
+    background: transparent;
+    font-family: $font-body;
+    font-size: 14px;
+    font-weight: 500;
+    color: $moss;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    &:hover {
+        border-color: $moss;
+        background: rgba(44, 62, 46, 0.04);
+    }
+
+    &.active {
+        background: $moss;
+        color: $cream;
+        border-color: transparent;
+    }
+}
+
+// =============================================
+// SORT DROPDOWN
+// =============================================
+
+.sort-dropdown {
+    position: relative;
+
+    &__trigger {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(44, 62, 46, 0.15);
+        background: transparent;
+        font-family: $font-body;
+        font-size: 14px;
+        font-weight: 500;
+        color: $moss;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            border-color: $moss;
+            background: rgba(44, 62, 46, 0.03);
+        }
+    }
+
+    &__menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        min-width: 180px;
+        background: #ffffff;
+        border: 1px solid rgba(44, 62, 46, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(44, 62, 46, 0.12);
+        overflow: hidden;
+        z-index: 100;
+    }
+
+    &__item {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        background: none;
+        border: none;
+        text-align: left;
+        font-family: $font-body;
+        font-size: 14px;
+        font-weight: 500;
+        color: $moss;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background: rgba(44, 62, 46, 0.05);
+        }
+
+        &.active {
+            background: rgba(44, 62, 46, 0.08);
+            font-weight: 600;
+        }
+
+        &:not(:last-child) {
+            border-bottom: 1px solid rgba(44, 62, 46, 0.06);
+        }
+    }
+}
+
+// =============================================
+// PRICE FILTER
+// =============================================
+
+.price-filter {
+    position: relative;
+
+    &__trigger {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(44, 62, 46, 0.15);
+        background: transparent;
+        font-family: $font-body;
+        font-size: 14px;
+        font-weight: 500;
+        color: $moss;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            border-color: $moss;
+            background: rgba(44, 62, 46, 0.03);
+        }
+
+        &.active {
+            background: rgba(44, 62, 46, 0.08);
+            border-color: $moss;
+        }
+    }
+
+    &__panel {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        width: 280px;
+        background: #ffffff;
+        border: 1px solid rgba(44, 62, 46, 0.1);
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(44, 62, 46, 0.15);
+        padding: $space-md;
+        z-index: 100;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $space-md;
+
+        span {
+            font-family: $font-heading;
+            font-size: 16px;
+            font-weight: 600;
+            color: $moss;
+        }
+    }
+
+    &__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(44, 62, 46, 0.05);
+        color: $moss;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+            background: rgba(44, 62, 46, 0.1);
+        }
+    }
+
+    &__inputs {
+        display: flex;
+        align-items: flex-end;
+        gap: 12px;
+        margin-bottom: $space-md;
+    }
+
+    &__input-group {
+        flex: 1;
+
+        label {
+            display: block;
+            font-family: $font-body;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(44, 62, 46, 0.6);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    }
+
+    &__input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 10px 12px;
+        border: 1px solid rgba(44, 62, 46, 0.15);
+        border-radius: 8px;
+        background: rgba(44, 62, 46, 0.02);
+        transition: border-color 0.2s;
+
+        &:focus-within {
+            border-color: $moss;
+        }
+
+        span {
+            font-family: $font-body;
+            font-size: 14px;
+            color: rgba(44, 62, 46, 0.5);
+        }
+
+        input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-family: $font-body;
+            font-size: 14px;
+            color: $moss;
+            outline: none;
+            -moz-appearance: textfield;
+
+            &::placeholder {
+                color: rgba(44, 62, 46, 0.3);
+            }
+
+            // Hide number input arrows
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        }
+    }
+
+    &__divider {
+        color: rgba(44, 62, 46, 0.3);
+        font-size: 16px;
+        padding-bottom: 8px;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    &__btn {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-family: $font-body;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &--clear {
+            background: transparent;
+            border: 1px solid rgba(44, 62, 46, 0.2);
+            color: $moss;
+
+            &:hover {
+                background: rgba(44, 62, 46, 0.05);
+            }
+        }
+
+        &--apply {
+            background: $moss;
+            border: none;
+            color: $cream;
+
+            &:hover {
+                background: $moss-light;
+            }
+        }
+    }
+}
+
+// =============================================
+// RESPONSIVE
+// =============================================
+
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $space-sm;
+        padding: $space-sm;
+
+        &__left {
+            width: 100%;
+        }
+
+        &__right {
+            width: 100%;
+            padding-left: 0;
+            justify-content: flex-start;
+        }
+    }
+
+    .sort-dropdown__menu,
+    .price-filter__panel {
+        left: 0;
+        right: auto;
+    }
+}

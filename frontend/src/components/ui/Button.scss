@@ -1,0 +1,122 @@
+@import "../../styles/values.scss";
+
+.floral-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: $font-body;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all $transition-base;
+    border: none;
+    border-radius: $radius-sm;
+    gap: $space-xs;
+    white-space: nowrap;
+
+    &:focus-visible {
+        outline: 2px solid $moss;
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    // Variants
+    &--primary {
+        background-color: $terracotta; // Standard terracotta
+        color: $moss; // HIGH CONTRAST DARK TEXT
+        font-weight: 600;
+
+        &:hover:not(:disabled) {
+            background-color: darken($terracotta, 5%);
+            color: $moss;
+        }
+
+        &:active:not(:disabled) {
+            background-color: darken($terracotta, 10%);
+        }
+    }
+
+    &--secondary {
+        background-color: transparent;
+        color: $moss;
+        border: 2px solid $moss; // Thicker border
+        font-weight: 600;
+
+        &:hover:not(:disabled) {
+            background-color: $moss;
+            color: $cream;
+        }
+    }
+
+    &--tertiary {
+        background-color: transparent;
+        color: $terracotta-deep;
+        border: 2px solid $terracotta-deep; // Thicker border
+        font-weight: 600;
+
+        &:hover:not(:disabled) {
+            background-color: $terracotta-deep;
+            color: $cream;
+        }
+    }
+
+    &--ghost {
+        background-color: transparent;
+        color: $moss;
+        font-weight: 500;
+
+        &:hover:not(:disabled) {
+            background-color: rgba($moss, 0.05);
+        }
+    }
+
+    &--link {
+        background-color: transparent;
+        color: $moss;
+        padding: 0;
+        min-height: auto;
+        border-bottom: 2px solid rgba($moss, 0.2);
+        border-radius: 0;
+        font-weight: 600;
+
+        &:hover:not(:disabled) {
+            border-bottom-color: $moss;
+        }
+    }
+
+    // Special: Dark variant for buttons on dark backgrounds
+    &--dark {
+        background-color: $moss;
+        color: $cream;
+        font-weight: 600;
+
+        &:hover:not(:disabled) {
+            background-color: $moss-light;
+        }
+    }
+
+    // Sizes
+    &--sm {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    &--md {
+        padding: 14px 28px;
+        font-size: 16px;
+    }
+
+    &--lg {
+        padding: 18px 40px;
+        font-size: 18px;
+    }
+
+    &--full {
+        width: 100%;
+        padding: 16px;
+        font-size: 16px;
+    }
+}

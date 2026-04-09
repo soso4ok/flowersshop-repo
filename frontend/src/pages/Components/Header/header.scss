@@ -1,0 +1,477 @@
+@import "/src/styles/values.scss";
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: $space-md $space-xl;
+  background: rgba(249, 248, 244, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(44, 62, 46, 0.08);
+
+  // Performance: Hardware acceleration hints
+  will-change: transform, background-color, padding;
+  transform: translateZ(0);
+
+  // Animate only transform and opacity for best performance
+  transition:
+    padding 0.3s ease-out,
+    background-color 0.3s ease-out,
+    box-shadow 0.3s ease-out;
+
+  &.scrolled {
+    padding: $space-sm $space-xl;
+    background: rgba(249, 248, 244, 0.95);
+    box-shadow: 0 2px 20px rgba(44, 62, 46, 0.05);
+  }
+
+  .content {
+    max-width: 1400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    &__nav {
+      display: flex;
+      align-items: center;
+      gap: $space-md; // 24px instead of 40px
+    }
+
+    &__logo {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+
+      img,
+      svg {
+        height: 40px;
+        width: auto;
+      }
+    }
+
+    &__list {
+      display: flex;
+      align-items: center;
+      gap: $space-md; // 24px
+
+      &-elem {
+        font-family: $font-body;
+        font-size: 15px;
+        font-weight: 500;
+        color: $moss;
+        letter-spacing: 0.02em;
+        transition: color $transition-fast;
+
+        &:hover {
+          color: $terracotta;
+        }
+      }
+    }
+
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: 16px; // Tighter utility group
+    }
+
+    &__divider {
+      height: 20px;
+      width: 1px;
+      background: rgba(44, 62, 46, 0.1);
+      margin: 0 4px; // Small margin to provide some breathing room without being "huge"
+    }
+
+    &__auth {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: $space-xs;
+      cursor: pointer;
+      transition: opacity $transition-fast;
+      color: $moss;
+      font-family: $font-body;
+      font-size: 15px;
+      font-weight: 500;
+
+      &:hover {
+        color: $terracotta;
+
+        svg {
+          stroke: $terracotta;
+        }
+      }
+
+      svg {
+        width: 24px;
+        height: 24px;
+        stroke: $moss;
+        stroke-width: 1.5;
+        fill: none;
+      }
+
+      &-button {
+        display: flex;
+        align-items: center;
+        gap: $space-xs;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: $moss;
+        font-family: $font-body;
+        font-size: 15px;
+        font-weight: 500;
+        transition: opacity $transition-fast;
+
+        &:hover {
+          color: $terracotta;
+
+          svg {
+            stroke: $terracotta;
+          }
+        }
+
+        svg {
+          width: 24px;
+          height: 24px;
+          stroke: $moss;
+          stroke-width: 1.5;
+          fill: none;
+        }
+      }
+
+      &-name {
+        font-family: $font-body;
+        font-size: 15px;
+        font-weight: 500;
+        color: $moss;
+      }
+
+      &-dropdown {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        min-width: 160px;
+        background: $cream;
+        border: 1px solid rgba(44, 62, 46, 0.1);
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(44, 62, 46, 0.1);
+        overflow: hidden;
+        z-index: 1000;
+
+        // Hardware acceleration for dropdown
+        transform: translateZ(0);
+
+        &-item {
+          display: block;
+          width: 100%;
+          padding: $space-sm $space-md;
+          background: none;
+          border: none;
+          text-align: left;
+          font-family: $font-body;
+          font-size: 14px;
+          font-weight: 500;
+          color: $moss;
+          cursor: pointer;
+          transition: background-color $transition-fast;
+
+          &:hover {
+            background-color: rgba(44, 62, 46, 0.05);
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px solid rgba(44, 62, 46, 0.08);
+          }
+        }
+      }
+    }
+
+    &__auth-links {
+      display: flex;
+      align-items: center;
+      gap: $space-sm;
+    }
+
+    &__signup-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: $space-xs $space-md;
+      background: $moss;
+      color: $cream;
+      font-family: $font-body;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: background-color $transition-fast, transform 0.15s ease;
+
+      &:hover {
+        background: darken($moss, 8%);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .content-cart {
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: $space-sm;
+      cursor: pointer;
+      transition: opacity $transition-fast;
+
+      &:hover {
+        color: $terracotta;
+
+        .content-cart__price {
+          color: $terracotta;
+        }
+
+        .content-cart__bucket svg {
+          stroke: $terracotta;
+        }
+      }
+
+      &__price {
+        font-family: $font-body;
+        font-size: 15px;
+        font-weight: 500;
+        color: $moss;
+      }
+
+      &__bucket {
+        position: relative;
+
+        svg {
+          width: 24px;
+          height: 24px;
+          stroke: $moss;
+          stroke-width: 1.5;
+          fill: none;
+        }
+      }
+
+      &__orders {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: $terracotta;
+        color: $cream;
+        font-size: 10px;
+        font-weight: 600;
+
+        // Hardware acceleration for badge
+        transform: translateZ(0);
+      }
+    }
+
+    // === "Bespoke" Premium Pill Button ===
+    &__bespoke-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 18px;
+      background: $terracotta;
+      color: white;
+      font-family: $font-body;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 10px rgba(224, 122, 95, 0.15);
+
+      svg {
+        transition: transform 0.3s ease;
+      }
+
+      &:hover {
+        background: $terracotta-contrast;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(224, 122, 95, 0.25);
+
+        svg {
+          transform: rotate(12deg) scale(1.1);
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+// Spacer to account for fixed header - Strict height for layout stability
+.header-spacer {
+  height: 80px;
+  min-height: 80px;
+  max-height: 80px;
+  flex-shrink: 0;
+}
+
+// === Sophisticated User Popover ===
+.user-popover {
+  position: absolute;
+  top: calc(100% + 15px);
+  right: 0;
+  width: 260px;
+  background: rgba(249, 248, 244, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(44, 62, 46, 0.08);
+  border-radius: 16px;
+  box-shadow:
+    0 10px 25px -5px rgba(44, 62, 46, 0.1),
+    0 8px 10px -6px rgba(44, 62, 46, 0.05);
+  overflow: hidden;
+  z-index: 1000;
+  padding: 4px;
+  transform-origin: top right;
+
+  &__header {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: $moss;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(44, 62, 46, 0.1);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__info {
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__name {
+    font-family: $font-body;
+    font-weight: 700;
+    font-size: 15px;
+    color: $moss;
+    margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__email {
+    font-family: $font-body;
+    font-size: 12px;
+    color: rgba(44, 62, 46, 0.6);
+    margin: 2px 0 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__divider {
+    height: 1px;
+    background: rgba(44, 62, 46, 0.06);
+    margin: 4px 8px;
+  }
+
+  &__menu {
+    padding: 4px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: $moss;
+    font-family: $font-body;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+
+    &:hover {
+      background: rgba(44, 62, 46, 0.04);
+
+      .user-popover__chevron {
+        transform: translateX(2px);
+        opacity: 0.8;
+      }
+
+      .user-popover__icon {
+        transform: scale(1.1);
+      }
+    }
+
+    &--logout {
+      color: $moss;
+
+      &:hover {
+        background: rgba(224, 122, 95, 0.08); // Terracotta tint
+        color: $terracotta;
+
+        .user-popover__icon {
+          color: $terracotta;
+        }
+      }
+    }
+  }
+
+  &__icon {
+    color: $moss;
+    transition: transform 0.2s ease;
+  }
+
+  &__chevron {
+    margin-left: auto;
+    opacity: 0.2;
+    transition: all 0.2s ease;
+  }
+
+  &__footer {
+    padding: 4px;
+  }
+}

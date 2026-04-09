@@ -38,10 +38,19 @@ docker-compose.override.yml
 *.log
 **/docker-compose.yaml
 **/docker-compose.yml
+!/docker-compose.yaml
+!/docker-compose.yml
 
 # Database
 *.sql
 postgres_data/
+
+# Terraform generated files
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+infra/tfplan
 
 # Environment Variables
 .env

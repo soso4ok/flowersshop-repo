@@ -1,0 +1,118 @@
+@import "/src/styles/values.scss";
+
+.order-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: $space-md;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(44, 62, 46, 0.03);
+    transition: transform $transition-base, box-shadow $transition-base;
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(44, 62, 46, 0.05);
+        padding-bottom: $space-sm;
+    }
+
+    &__date {
+        font-family: $font-body;
+        font-size: 0.9rem;
+        color: rgba(44, 62, 46, 0.6);
+        font-weight: 500;
+    }
+
+    &__total {
+        font-family: $font-heading;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $moss;
+    }
+
+    &__items {
+        display: flex;
+        align-items: center;
+        gap: $space-xs;
+        flex-wrap: wrap;
+    }
+
+    &__thumbnail {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px; // Rounded square as requested
+        overflow: hidden;
+        background: $cream;
+        border: 1px solid rgba(44, 62, 46, 0.05);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__more-badge {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        background: $cream;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: $font-body;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: $moss;
+        border: 1px solid rgba(44, 62, 46, 0.08);
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: auto;
+    }
+
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 100px;
+        font-family: $font-body;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+
+        &.status--processing {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        &.status--delivered {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        &.status--cancelled {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        &.status--pickup {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        &.status--default {
+            background-color: $cream;
+            color: $moss;
+        }
+    }
+}

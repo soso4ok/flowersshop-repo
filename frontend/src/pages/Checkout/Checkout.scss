@@ -1,0 +1,417 @@
+@import "/src/styles/values.scss";
+
+.checkout-page {
+    min-height: 100vh;
+    background-color: $cream;
+    padding-bottom: $space-2xl;
+}
+
+.checkout {
+    max-width: 1200px; // Standard width
+    margin: 0 auto;
+    padding: $space-xl $space-lg;
+    width: 100%;
+
+    &__container {
+        display: grid;
+        grid-template-columns: 1fr; // Mobile first (stacked)
+        gap: 32px; // Requested 32px gap
+        align-items: start;
+
+        @media (min-width: 1024px) {
+            grid-template-columns: 2fr 1fr; // 2/3 and 1/3 layout
+        }
+    }
+
+    &__title {
+        font-family: $font-heading;
+        font-size: 40px;
+        font-weight: 500;
+        color: $moss;
+        margin-bottom: $space-lg;
+        grid-column: 1 / -1;
+        text-align: center;
+
+        @media (min-width: 1024px) {
+            text-align: left;
+        }
+    }
+
+    // Left Column - Delivery Form
+    &__form-section {
+        background: #fff;
+        padding: $space-lg;
+        border-radius: $radius-md;
+        border: 1px solid rgba($moss, 0.1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    &__form {
+        .form__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: $space-md;
+            padding-bottom: $space-sm;
+            border-bottom: 1px solid rgba($moss, 0.1);
+
+            .form__section-title {
+                margin-bottom: 0;
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+        }
+
+        .form__address-btn {
+            background: none;
+            border: 1px dashed $moss;
+            color: $moss;
+            padding: 6px 14px;
+            font-family: $font-body;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all $transition-fast;
+
+            &:hover {
+                background: rgba($moss, 0.05);
+                transform: translateY(-1px);
+            }
+        }
+
+        .address-select-dropdown {
+            background: rgba($moss, 0.02);
+            border: 1px dashed rgba($moss, 0.3);
+            border-radius: $radius-sm;
+            margin-bottom: $space-lg;
+            overflow: hidden;
+        }
+
+        .address-option {
+            padding: $space-md;
+            cursor: pointer;
+            transition: all $transition-fast;
+            border-bottom: 1px dashed rgba($moss, 0.1);
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:hover {
+                background: rgba($moss, 0.06);
+            }
+
+            &__street {
+                font-family: $font-body;
+                font-size: 14px;
+                font-weight: 600;
+                color: $moss;
+                margin-bottom: 2px;
+            }
+
+            &__details {
+                font-family: $font-body;
+                font-size: 12px;
+                color: rgba($moss, 0.7);
+            }
+        }
+
+        .form__group {
+            margin-bottom: $space-md;
+
+            label {
+                display: block;
+                font-family: $font-body;
+                font-size: 14px;
+                font-weight: 600; // Bold/Semibold
+                color: $moss;
+                margin-bottom: 8px; // Place above input
+            }
+
+            input,
+            textarea {
+                width: 100%;
+                padding: 0.75rem; // Requested padding
+                font-family: $font-body;
+                font-size: 16px;
+                color: $moss;
+                background: #fff;
+                border: 1px solid #e5e7eb; // Requested border color
+                border-radius: 4px; // Requested radius
+                transition: all $transition-fast;
+
+                &:focus {
+                    outline: none;
+                    border-color: $moss;
+                    box-shadow: 0 0 0 3px rgba($moss, 0.1);
+                }
+
+                &::placeholder {
+                    color: rgba($moss, 0.4);
+                }
+
+                &.error {
+                    border-color: #ef4444;
+                    background-color: rgba(239, 68, 68, 0.02);
+                }
+            }
+
+            textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+        }
+
+        .form__row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: $space-md;
+
+            @media (min-width: 640px) {
+                grid-template-columns: 1fr 1fr; // City and Postal Code 50/50
+            }
+        }
+
+        .form__error {
+            display: block;
+            font-size: 12px;
+            color: #ef4444;
+            margin-top: 4px;
+        }
+    }
+
+    // Right Column - Order Summary
+    &__summary {
+        @media (min-width: 1024px) {
+            position: sticky;
+            top: 20px; // Sticky placement
+        }
+    }
+}
+
+.order-summary {
+    background: #f9f9f9; // Light background requested
+    padding: $space-lg;
+    border-radius: $radius-md;
+    border: 1px solid rgba($moss, 0.08); // Subtle border
+
+    &__title {
+        font-family: $font-heading;
+        font-size: 22px;
+        font-weight: 500;
+        color: $moss;
+        margin-bottom: $space-md;
+        padding-bottom: $space-sm;
+        border-bottom: 1px solid rgba($moss, 0.1);
+    }
+
+    &__items {
+        margin-bottom: $space-md;
+        max-height: 300px;
+        overflow-y: auto;
+        padding-right: 4px;
+
+        &::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba($moss, 0.2);
+            border-radius: 4px;
+        }
+    }
+
+    &__totals {
+        margin-top: $space-md;
+        padding-top: $space-md;
+        border-top: 1px solid rgba($moss, 0.1);
+    }
+
+    &__row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-family: $font-body;
+        font-size: 14px;
+        color: rgba($moss, 0.8);
+
+        span:last-child {
+            font-weight: 600;
+            color: $moss;
+        }
+    }
+
+    &__total {
+        display: flex;
+        justify-content: space-between;
+        margin-top: $space-md;
+        padding-top: $space-md;
+        border-top: 1px solid rgba($moss, 0.1);
+        font-family: $font-heading;
+        font-size: 20px;
+        font-weight: 600;
+        color: $moss;
+    }
+
+    // Primary Action Button
+    &__submit {
+        width: 100%;
+        margin-top: $space-lg;
+        padding: 14px;
+        background-color: $moss; // Dark green as requested (or could use $terracotta)
+        color: #fff; // White text
+        font-family: $font-body;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all $transition-fast;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        &:hover:not(:disabled) {
+            background-color: $moss-light;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba($moss, 0.2);
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background-color: rgba($moss, 0.5);
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+    }
+
+    // Terms and Conditions text
+    &__note {
+        margin-top: 16px;
+        font-family: $font-body;
+        font-size: 12px; // Smaller text
+        color: rgba($moss, 0.6);
+        text-align: center; // Centered
+        line-height: 1.4;
+    }
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed rgba($moss, 0.1);
+
+    &:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    &__image {
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+        overflow: hidden;
+        flex-shrink: 0;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__details {
+        flex: 1;
+        min-width: 0;
+
+        h3 {
+            font-family: $font-heading;
+            font-size: 14px;
+            font-weight: 600;
+            color: $moss;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        p {
+            font-family: $font-body;
+            font-size: 12px;
+            color: rgba($moss, 0.7);
+        }
+    }
+
+    &__price {
+        font-family: $font-body;
+        font-size: 14px;
+        font-weight: 600;
+        color: $moss;
+    }
+}
+
+// Success State
+.checkout__success {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: $space-2xl $space-lg;
+    background: #fff;
+    border-radius: $radius-lg;
+    max-width: 600px;
+    margin: 40px auto;
+
+    .success-icon {
+        color: $moss;
+        margin-bottom: $space-md;
+
+        svg {
+            width: 64px;
+            height: 64px;
+
+            circle {
+                fill: rgba($moss, 0.1);
+            }
+
+            path {
+                stroke: $moss;
+            }
+        }
+    }
+
+    h1 {
+        font-family: $font-heading;
+        font-size: 32px;
+        color: $moss;
+        margin-bottom: $space-sm;
+    }
+
+    p {
+        font-family: $font-body;
+        font-size: 16px;
+        color: rgba($moss, 0.8);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

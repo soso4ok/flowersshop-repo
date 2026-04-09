@@ -1,0 +1,39 @@
+// =============================================
+// LUXURY FLORAL E-COMMERCE DESIGN TOKENS
+// =============================================
+
+// Color Palette
+$cream: #F9F8F4; // Background
+$moss: #2C3E2E; // Primary text
+$terracotta: #E07A5F; // Brand accent
+$terracotta-contrast: #A6442E; // Accessible background for white text (5.4:1)
+$terracotta-deep: #8A3D29; // Accessible text color on cream (6.2:1)
+$moss-light: #3D5240; // Hover states
+$terracotta-dark: #8A3D29; // Deepened for hover accessibility
+
+// Legacy colors (for gradual migration)
+$primaryBlack: #1A1A1A;
+$primaryRed: #D21C2E;
+$primaryWhite: #FCFCFC;
+
+// Typography
+$font-heading: 'Playfair Display', Georgia, serif;
+$font-body: 'Manrope', 'Inter', sans-serif;
+
+// Spacing
+$space-xs: 8px;
+$space-sm: 16px;
+$space-md: 24px;
+$space-lg: 40px;
+$space-xl: 64px;
+$space-2xl: 96px;
+
+// Border Radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 16px;
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-base: 0.3s ease;
+$transition-slow: 0.5s ease;

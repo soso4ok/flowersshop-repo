@@ -1,0 +1,254 @@
+@import "../../styles/values.scss";
+
+.auth-page {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    background-color: $cream;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-lg;
+
+    // Noise Texture
+    &::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+        opacity: 0.15;
+        pointer-events: none;
+        z-index: 50;
+    }
+}
+
+.marquee-container {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.marquee-text {
+    font-family: $font-heading;
+    font-size: 15vw;
+    font-weight: 500;
+    color: rgba($moss, 0.05); // low opacity
+    // text-transform: uppercase;
+}
+
+.auth-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    height: 80vh;
+    gap: 0;
+
+    @media (max-width: 1024px) {
+        flex-direction: column;
+        height: auto;
+        padding-top: $space-2xl;
+    }
+}
+
+.auth-visual {
+    position: relative;
+    width: 45%;
+    height: 100%;
+    flex-shrink: 0;
+    z-index: 11;
+    will-change: transform;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        // sharp edges as requested (no border radius)
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 1024px) {
+        width: 100%;
+        height: 400px;
+        margin-bottom: -40px; // overlap for mobile
+    }
+}
+
+.auth-form-card {
+    position: relative;
+    width: 500px;
+    margin-left: -10%; // 20% total overlap
+    padding: $space-xl;
+    background: rgba(255, 255, 255, 0.9); // Increased opacity for better contrast
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 40px 100px rgba(44, 62, 46, 0.15); // Use $moss for shadow
+    z-index: 12;
+
+    @media (max-width: 1024px) {
+        width: 100%;
+        margin-left: 0;
+        padding: $space-lg;
+    }
+}
+
+// Form Styling
+.auth-form-header {
+    margin-bottom: $space-xl;
+
+    h1 {
+        font-family: $font-heading;
+        font-size: 40px;
+        font-weight: 500;
+        color: $moss;
+        font-style: italic; // italic as requested
+    }
+}
+
+.auth-input-group {
+    position: relative;
+    margin-bottom: $space-lg;
+
+    label {
+        display: block;
+        font-family: $font-body;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: $moss; // Full contrast
+        margin-bottom: 8px;
+    }
+
+    input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid rgba($moss, 0.1); // Thicker line for visibility
+        padding: 12px 0;
+        font-family: $font-body;
+        font-size: 16px;
+        color: $moss;
+        transition: border-color 0.3s ease;
+
+        &:focus {
+            outline: none;
+            border-bottom-color: $terracotta;
+        }
+
+        &::placeholder {
+            color: rgba($moss, 0.4); // Visible placeholder
+        }
+    }
+
+    .focus-line {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background-color: $terracotta;
+        transition: all 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+        transform: translateX(-50%);
+    }
+
+    input:focus~.focus-line {
+        width: 100%;
+    }
+}
+
+.auth-button {
+    width: 100%;
+    height: 56px;
+    background-color: $moss; // Reverted to dark moss as requested
+    color: #fff; // Fixed text color to white for high contrast on dark green
+    border: none;
+    border-radius: $radius-sm;
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    overflow: hidden;
+    margin-top: $space-lg;
+    transition: all $transition-base;
+
+    span {
+        color: inherit; // Ensure text inherits white from parent
+        transition: transform 0.3s ease;
+    }
+
+    svg {
+        transition: transform 0.3s ease;
+        stroke: #fff; // Icons match text color
+    }
+
+    &:hover:not(:disabled) {
+        background-color: $moss-light;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+        svg {
+            transform: translateX(5px);
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid $moss;
+        outline-offset: 4px;
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        background-color: darken($moss, 5%);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background-color: desaturate($moss, 30%);
+    }
+}
+
+.auth-footer {
+    margin-top: $space-lg;
+    text-align: center;
+    font-family: $font-body;
+    font-size: 14px;
+    color: $moss;
+
+    a {
+        font-weight: 700;
+        color: $terracotta-deep;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $terracotta-deep;
+            outline-offset: 4px;
+        }
+    }
+}
+
+.error-container {
+    margin-bottom: $space-md;
+}

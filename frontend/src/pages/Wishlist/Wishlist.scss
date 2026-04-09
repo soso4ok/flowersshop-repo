@@ -1,0 +1,154 @@
+@import "/src/styles/values.scss";
+
+.wishlist-page {
+    min-height: 80vh;
+    background-color: $cream;
+    padding-bottom: $space-2xl;
+}
+
+.wishlist-hero {
+    background: linear-gradient(to bottom, rgba($moss, 0.03), transparent);
+    padding: $space-2xl $space-lg;
+    text-align: center;
+    border-bottom: 1px solid rgba($moss, 0.05);
+
+    &__content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    &__subtitle {
+        display: block;
+        font-family: $font-heading;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: $terracotta;
+        margin-bottom: $space-sm;
+    }
+
+    &__title {
+        font-family: $font-heading;
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 500;
+        color: $moss;
+        margin-bottom: $space-md;
+    }
+
+    &__description {
+        font-family: $font-body;
+        font-size: 16px;
+        color: rgba($moss, 0.7);
+        line-height: 1.6;
+    }
+}
+
+.wishlist-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: $space-xl $space-lg;
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 32px;
+    }
+}
+
+.wishlist-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: $space-2xl $space-lg;
+    min-height: 400px;
+
+    &__icon-wrapper {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba($moss, 0.2);
+        margin-bottom: $space-lg;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    &__icon {
+        color: rgba($moss, 0.1);
+        margin-bottom: $space-lg;
+    }
+
+    h2 {
+        font-family: $font-heading;
+        font-size: 24px;
+        color: $moss;
+        margin-bottom: $space-sm;
+    }
+
+    p {
+        font-family: $font-body;
+        font-size: 16px;
+        color: rgba($moss, 0.6);
+        max-width: 400px;
+        margin-bottom: $space-xl;
+        line-height: 1.6;
+    }
+
+    &__btn {
+        display: flex;
+        align-items: center;
+        gap: $space-xs;
+        padding: 14px 28px;
+        background: $moss;
+        color: white;
+        border: none;
+        border-radius: $radius-sm;
+        font-family: $font-body;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all $transition-base;
+        box-shadow: 0 4px 12px rgba($moss, 0.2);
+
+        &:hover {
+            background: $moss-light;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba($moss, 0.3);
+        }
+    }
+}
+
+.wishlist-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $space-2xl;
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba($moss, 0.1);
+        border-top-color: $moss;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: $space-md;
+    }
+
+    p {
+        font-family: $font-body;
+        font-size: 14px;
+        color: rgba($moss, 0.6);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

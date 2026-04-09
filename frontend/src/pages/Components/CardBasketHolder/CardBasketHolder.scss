@@ -1,0 +1,128 @@
+.cart {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 480px;
+  height: 170px;
+}
+
+  .cart-image-container img{
+    margin: 0 auto;
+    width: 210px;
+    height: 160px;
+    border-radius: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.cart-content {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.cart-title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 22px;
+  margin-top: 10px;
+  color: #1a1a1a;
+}
+
+.cart__price-and-counter {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: end;
+  height: 60px;
+
+
+  .cart__price {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 22px;
+    color: #1a1a1a;
+  }
+
+  .cart__counter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+    gap: 10px;
+
+    .cart__counter-inner {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0px;
+      gap: 10px;
+
+      .cart__counter-controls {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0px;
+        gap: 10px;
+
+        .cart__counter-control {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          background: none;
+
+        }
+
+        .cart__counter-num {
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-style: normal;
+          font-weight: 600;
+          font-size: 18px;
+          line-height: 22px;
+          color: #1a1a1a;
+        }
+      }
+    }
+  }
+}
+
+.cart-remove-button {
+  display: none;
+
+
+  .remove-button {
+    width: 106px;
+    height: 30px;
+    background: #ff4693;
+    border-radius: 50px;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #e63869;
+    }
+
+  }
+}

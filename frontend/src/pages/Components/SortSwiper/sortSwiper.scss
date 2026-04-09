@@ -1,0 +1,53 @@
+@import "/src/styles/values.scss";
+
+.slider-container {
+  margin-top: $space-lg;
+  padding: 0 $space-md;
+}
+
+.flower-slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  box-sizing: border-box;
+  width: 140px;
+  height: 160px;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  img {
+    object-fit: cover;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all $transition-base;
+  }
+
+  &.active {
+    img {
+      border-color: $terracotta;
+      box-shadow: 0 4px 20px rgba(224, 122, 95, 0.3);
+    }
+
+    .slider-name-placeholder {
+      color: $terracotta;
+    }
+  }
+}
+
+.slider-name-placeholder {
+  margin-top: $space-sm;
+  font-family: $font-body;
+  font-size: 14px;
+  font-weight: 500;
+  color: $moss;
+  text-align: center;
+  transition: color $transition-fast;
+}

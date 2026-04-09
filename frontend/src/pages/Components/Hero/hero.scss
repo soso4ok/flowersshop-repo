@@ -1,0 +1,326 @@
+@import "/src/styles/values.scss";
+
+// =============================================
+// ARTISTIC HERO - ETHEREAL INK & WATERCOLOR
+// =============================================
+
+.hero-artistic {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-color: $cream;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // =========================================
+    // LAYER 1: WATERCOLOR SPLASHES (z-0)
+    // =========================================
+    &__splash {
+        position: absolute;
+        z-index: 0;
+        pointer-events: none;
+        mix-blend-mode: multiply;
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        &--top-left {
+            top: -10%; // Moved up slightly to match eucalyptus
+            left: -10%;
+            width: 60vw;
+            max-width: 800px;
+            transform: rotate(-15deg);
+            opacity: 0.05;
+        }
+
+        &--bottom-right {
+            bottom: -5%; // Adjusted for smaller bloom
+            right: 0%;
+            width: 40vw;
+            max-width: 500px;
+            transform: rotate(20deg);
+            opacity: 0.1;
+        }
+
+        &--center-right {
+            top: 30%;
+            right: 10%;
+            width: 20vw;
+            max-width: 300px;
+            transform: rotate(-10deg);
+            opacity: 0.04;
+        }
+
+        &--bottom-center {
+            bottom: -2%;
+            left: 50%;
+            transform: translateX(-50%) rotate(5deg);
+            width: 70vw;
+            max-width: 1000px;
+            opacity: 0.06;
+        }
+    }
+
+    // =========================================
+    // LAYER 2: BOTANICAL IMAGE ART (z-10)
+    // =========================================
+    &__image-wrapper {
+        position: absolute;
+        z-index: 10;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all $transition-base;
+
+        &--left {
+            left: 5%; // More breathing room
+            top: 45%; // Centered higher
+            transform: translateY(-50%) rotate(-2deg);
+            height: 70vh; // Reduced height to avoid clipping
+            max-height: 700px;
+            width: auto;
+
+            @media (max-width: 1200px) {
+                left: 2%;
+            }
+        }
+
+        &--right {
+            right: 8%; // Breathing room from edge
+            bottom: 8%; // Breathing room from edge
+            width: 22vw; // Significantly reduced size
+            max-width: 320px;
+            transform: rotate(3deg);
+
+            @media (max-width: 1200px) {
+                right: 4%;
+            }
+        }
+
+        &--top-accent {
+            top: 5%;
+            right: 12%;
+            width: 15vw;
+            max-width: 220px;
+            transform: rotate(-12deg);
+            opacity: 0.65;
+
+            @media (max-width: 1200px) {
+                top: -5%;
+                right: -2%;
+            }
+        }
+
+        // Mobile responsiveness
+        @media (max-width: 768px) {
+            &--left {
+                left: -25vw;
+                width: 60vw;
+                opacity: 0.3;
+            }
+
+            &--right {
+                right: -20vw;
+                width: 70vw;
+                opacity: 0.3;
+            }
+
+            &--top-accent {
+                display: none;
+            }
+        }
+    }
+
+    &__image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: brightness(0) saturate(100%) invert(20%) sepia(21%) saturate(545%) hue-rotate(81deg) brightness(91%) contrast(88%);
+        opacity: 0.85;
+    }
+
+    // =========================================
+    // LAYER 3: TYPOGRAPHY & CONTENT (z-20)
+    // =========================================
+    &__content {
+        position: relative;
+        z-index: 20;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: $space-xl $space-lg;
+
+        @media (max-width: 768px) {
+            padding: $space-lg $space-md;
+        }
+    }
+
+    &__content-inner {
+        max-width: 850px; // max-w-4xl equivalent
+        text-align: center;
+        background: rgba(249, 248, 244, 0.4);
+        backdrop-filter: blur(4px);
+        padding: $space-xl;
+        border-radius: $radius-lg;
+
+        @media (max-width: 768px) {
+            padding: $space-lg $space-md;
+            background: rgba(249, 248, 244, 0.7);
+        }
+    }
+
+    &__label {
+        display: inline-block;
+        font-family: $font-body;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: $terracotta-deep; // Accessible contrast
+        margin-bottom: $space-md;
+        padding: $space-xs $space-sm;
+        border: 1px solid rgba(138, 61, 41, 0.2); // Compliant border
+        border-radius: $radius-sm;
+    }
+
+    &__title {
+        font-family: $font-heading;
+        font-size: clamp(40px, 6.5vw, 88px);
+        font-weight: 500;
+        color: $moss;
+        line-height: 1.05;
+        margin: 0 0 $space-md;
+        letter-spacing: -0.01em;
+    }
+
+    &__subtitle {
+        font-family: $font-body;
+        font-size: clamp(16px, 1.8vw, 22px);
+        font-weight: 400;
+        color: rgba(44, 62, 46, 0.8);
+        line-height: 1.6;
+        margin: 0 auto $space-xl;
+        max-width: 580px;
+    }
+
+    &__actions {
+        display: flex;
+        gap: $space-md;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    &__cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 36px;
+        background: $moss;
+        color: $cream; // High contrast allowed on dark green
+        font-family: $font-body;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: $radius-sm;
+        transition: all $transition-base;
+        box-shadow: 0 4px 15px rgba(44, 62, 46, 0.1);
+
+        &:hover {
+            background: $moss-light;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(44, 62, 46, 0.2);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $moss;
+            outline-offset: 2px;
+        }
+    }
+
+    &__cta-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 36px;
+        background: transparent;
+        color: $moss;
+        font-family: $font-body;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 2px solid $moss; // Thicker border
+        border-radius: $radius-sm;
+        transition: all $transition-base;
+
+        &:hover {
+            background: $moss;
+            color: $cream;
+            transform: translateY(-2px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $moss;
+            outline-offset: 2px;
+        }
+    }
+
+    // =========================================
+    // SCROLL INDICATOR
+    // =========================================
+    &__scroll {
+        position: absolute;
+        bottom: $space-xl;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 25;
+        width: 26px;
+        height: 44px;
+        border: 1.5px solid rgba(44, 62, 46, 0.2);
+        border-radius: 13px;
+        display: flex;
+        justify-content: center;
+        padding-top: 10px;
+
+        @media (max-width: 768px) {
+            bottom: $space-lg;
+        }
+    }
+
+    &__scroll-dot {
+        width: 4px;
+        height: 10px;
+        background: $moss;
+        border-radius: 2px;
+    }
+}
+
+// =============================================
+// REDUCED MOTION PREFERENCE
+// =============================================
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-artistic {
+        &__image-wrapper {
+            transition: none;
+            opacity: 1;
+            clip-path: none;
+        }
+
+        &__splash {
+            transition: none;
+            opacity: 0.1;
+        }
+
+        &__scroll-dot {
+            animation: none;
+        }
+    }
+}

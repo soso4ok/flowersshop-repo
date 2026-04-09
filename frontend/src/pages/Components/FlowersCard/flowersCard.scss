@@ -1,0 +1,152 @@
+@import "/src/styles/values.scss";
+
+.product-card {
+  display: block;
+  text-decoration: none;
+  background: $cream;
+  border-radius: $radius-md;
+  overflow: hidden;
+  transition: all $transition-base;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(44, 62, 46, 0.1);
+
+    .product-card__image {
+      transform: scale(1.02);
+    }
+
+    .product-card__add-btn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &__image-wrapper {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: rgba(44, 62, 46, 0.05);
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $transition-slow;
+  }
+
+  &__fav-btn {
+    position: absolute;
+    top: $space-sm;
+    right: $space-sm;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(white, 0.8);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba($moss, 0.1);
+    border-radius: 50%;
+    color: $moss;
+    cursor: pointer;
+    transition: all $transition-fast;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+      background: white;
+      transform: scale(1.1);
+      color: $terracotta;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    &--active {
+      background: white;
+      color: $terracotta;
+      border-color: rgba($terracotta, 0.2);
+
+      svg {
+        fill: $terracotta;
+      }
+    }
+  }
+
+  &__add-btn {
+    position: absolute;
+    bottom: $space-md;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+    padding: 12px 24px;
+    background: $cream;
+    color: $moss;
+    font-family: $font-body;
+    font-size: 14px;
+    font-weight: 600;
+    border: 2px solid rgba($moss, 0.15); // Thicker border
+    border-radius: $radius-sm;
+    cursor: pointer;
+    opacity: 0;
+    transition: all $transition-base;
+
+    &:hover {
+      background: $terracotta;
+      color: $moss; // DARK TEXT ON TERRACOTTA
+      border-color: $terracotta;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $moss;
+      outline-offset: -4px;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    svg {
+      stroke: currentColor;
+    }
+  }
+
+  &__info {
+    padding: $space-md;
+  }
+
+  &__name {
+    font-family: $font-body;
+    font-size: 16px;
+    font-weight: 500;
+    color: $moss;
+    margin-bottom: $space-xs;
+    line-height: 1.4;
+  }
+
+  &__price-row {
+    display: flex;
+    align-items: center;
+    gap: $space-sm;
+  }
+
+  &__price {
+    font-family: $font-body;
+    font-size: 18px;
+    font-weight: 600;
+    color: $moss;
+  }
+}
+
+// Stagger animation for grid items
+.products-grid {
+  .product-card {
+    @for $i from 1 through 12 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }
+}

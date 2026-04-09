@@ -1,0 +1,448 @@
+@import "../../styles/values.scss";
+
+// =============================================
+// BLOG POST PAGE - LUXURY MAGAZINE EXPERIENCE
+// =============================================
+
+$font-article: 'Merriweather', Georgia, serif;
+$content-max-width: 740px;
+$wide-content-max-width: 900px;
+
+.blog-post {
+    background-color: $cream;
+    min-height: 100vh;
+    padding-bottom: $space-2xl;
+
+    // =============================================
+    // LOADING & ERROR STATES
+    // =============================================
+
+    &--loading,
+    &--error {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+    }
+
+    &__loading-container,
+    &__error-container {
+        text-align: center;
+        padding: $space-xl;
+    }
+
+    &__loading-spinner {
+        width: 48px;
+        height: 48px;
+        border: 3px solid rgba($moss, 0.1);
+        border-top-color: $terracotta;
+        border-radius: 50%;
+        margin: 0 auto $space-md;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    &__error-container {
+        h2 {
+            font-family: $font-heading;
+            font-size: 32px;
+            margin-bottom: $space-md;
+        }
+
+        p {
+            color: rgba($moss, 0.7);
+            margin-bottom: $space-lg;
+        }
+    }
+
+    // =============================================
+    // HEADER SECTION (THE HOOK)
+    // =============================================
+
+    &__header {
+        text-align: center;
+        padding: $space-2xl $space-md $space-xl;
+        max-width: $content-max-width;
+        margin: 0 auto;
+    }
+
+    &__header-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $space-md;
+    }
+
+    &__category {
+        font-family: $font-body;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: $terracotta;
+    }
+
+    &__title {
+        font-family: $font-heading;
+        font-size: clamp(32px, 6vw, 56px);
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        color: $moss;
+        max-width: 900px;
+        text-wrap: balance;
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        gap: $space-xs;
+        flex-wrap: wrap;
+        justify-content: center;
+        font-family: $font-body;
+        font-size: 14px;
+        color: rgba($moss, 0.6);
+    }
+
+    &__separator {
+        opacity: 0.4;
+    }
+
+    &__author,
+    &__date,
+    &__read-time {
+        white-space: nowrap;
+    }
+
+    // =============================================
+    // HERO IMAGE (PARALLAX)
+    // =============================================
+
+    &__hero-image-wrapper {
+        width: 100%;
+        height: 50vh;
+        overflow: hidden;
+        position: relative;
+        margin-bottom: $space-xl;
+
+        @media (min-width: 768px) {
+            height: 70vh;
+        }
+    }
+
+    &__hero-image-container {
+        width: 100%;
+        height: 100%;
+        will-change: transform;
+    }
+
+    &__hero-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    // =============================================
+    // ARTICLE CONTENT (THE "BOOK" FEEL)
+    // =============================================
+
+    &__content {
+        max-width: $content-max-width;
+        margin: 0 auto;
+        padding: 0 $space-md;
+    }
+
+    &__body {
+        font-family: $font-article;
+        font-size: 18px;
+        line-height: 1.9;
+        color: rgba($moss, 0.9);
+
+        @media (min-width: 768px) {
+            font-size: 20px;
+            line-height: 2;
+        }
+
+        p {
+            font-family: $font-article;
+            font-size: inherit;
+            line-height: inherit;
+            margin-bottom: $space-lg;
+            color: inherit;
+        }
+
+        h2 {
+            font-family: $font-heading;
+            font-size: 28px;
+            font-weight: 500;
+            margin-top: $space-xl;
+            margin-bottom: $space-md;
+            color: $moss;
+
+            @media (min-width: 768px) {
+                font-size: 32px;
+            }
+        }
+
+        h3 {
+            font-family: $font-heading;
+            font-size: 22px;
+            font-weight: 500;
+            margin-top: $space-lg;
+            margin-bottom: $space-sm;
+            color: $moss;
+        }
+
+        ul,
+        ol {
+            margin-bottom: $space-lg;
+            padding-left: $space-lg;
+        }
+
+        li {
+            font-family: $font-article;
+            font-size: inherit;
+            line-height: inherit;
+            margin-bottom: $space-xs;
+        }
+
+        a {
+            color: $terracotta;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color $transition-fast;
+
+            &:hover {
+                color: $terracotta-dark;
+            }
+        }
+    }
+
+    // =============================================
+    // DROP CAP (FIRST LETTER)
+    // =============================================
+
+    &__intro {
+        &:first-of-type {
+            margin-top: 0;
+        }
+    }
+
+    &__drop-cap {
+        float: left;
+        font-family: $font-heading;
+        font-size: 72px;
+        font-weight: 700;
+        line-height: 0.8;
+        padding-right: 12px;
+        padding-top: 8px;
+        color: $moss;
+
+        @media (min-width: 768px) {
+            font-size: 88px;
+            padding-right: 16px;
+            padding-top: 10px;
+        }
+    }
+
+    // =============================================
+    // BLOCKQUOTE
+    // =============================================
+
+    &__quote {
+        position: relative;
+        font-family: $font-heading;
+        font-size: 24px;
+        font-style: italic;
+        font-weight: 400;
+        line-height: 1.6;
+        color: $moss;
+        margin: $space-xl 0;
+        padding: $space-lg $space-lg $space-lg $space-xl;
+        border-left: 4px solid $terracotta;
+        background: rgba($moss, 0.03);
+        border-radius: 0 $radius-md $radius-md 0;
+
+        @media (min-width: 768px) {
+            font-size: 28px;
+            margin: $space-xl (
+                -$space-lg
+            );
+        padding: $space-lg $space-xl $space-lg $space-2xl;
+    }
+
+    &::before {
+        content: '"';
+        position: absolute;
+        left: 16px;
+        top: 12px;
+        font-family: $font-heading;
+        font-size: 64px;
+        font-style: normal;
+        color: rgba($terracotta, 0.3);
+        line-height: 1;
+
+        @media (min-width: 768px) {
+            left: 20px;
+            font-size: 80px;
+        }
+    }
+}
+
+// =============================================
+// DIVIDER
+// =============================================
+
+&__divider {
+    display: flex;
+    justify-content: center;
+    padding: $space-xl 0;
+
+    svg {
+        opacity: 0.8;
+    }
+}
+
+// =============================================
+// RELATED POSTS
+// =============================================
+
+&__related {
+    max-width: $wide-content-max-width;
+    margin: 0 auto;
+    padding: 0 $space-md;
+}
+
+&__related-title {
+    font-family: $font-heading;
+    font-size: 28px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: $space-lg;
+    color: $moss;
+}
+
+&__related-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-lg;
+
+    @media (min-width: 640px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+// =============================================
+// BACK LINK
+// =============================================
+
+&__back {
+    max-width: $content-max-width;
+    margin: 0 auto;
+    padding: $space-xl $space-md 0;
+    text-align: center;
+}
+
+&__back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-xs;
+    font-family: $font-body;
+    font-size: 15px;
+    font-weight: 500;
+    color: $moss;
+    text-decoration: none;
+    transition: all $transition-base;
+
+    svg {
+        transition: transform $transition-fast;
+    }
+
+    &:hover {
+        color: $terracotta;
+
+        svg {
+            transform: translateX(-4px);
+        }
+    }
+}
+}
+
+// =============================================
+// RELATED CARD COMPONENT
+// =============================================
+
+.related-card {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: $radius-md;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all $transition-base;
+    box-shadow: 0 4px 20px rgba($moss, 0.06);
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba($moss, 0.12);
+
+        .related-card__image {
+            transform: scale(1.05);
+        }
+    }
+
+    &__image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    &__image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform $transition-slow;
+    }
+
+    &__content {
+        padding: $space-md;
+        display: flex;
+        flex-direction: column;
+        gap: $space-xs;
+    }
+
+    &__category {
+        font-family: $font-body;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: $terracotta;
+    }
+
+    &__title {
+        font-family: $font-heading;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 1.4;
+        color: $moss;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    &__date {
+        font-family: $font-body;
+        font-size: 13px;
+        color: rgba($moss, 0.5);
+    }
+}

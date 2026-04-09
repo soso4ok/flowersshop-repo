@@ -1,0 +1,70 @@
+@import "/src/styles/values.scss";
+
+.about-page {
+    min-height: 100vh;
+    background-color: $cream;
+}
+
+.about {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: $space-2xl $space-lg;
+
+    &__container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: $space-xl;
+        align-items: start;
+
+        @media (min-width: 768px) {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    &__content {
+        order: 2;
+
+        @media (min-width: 768px) {
+            order: 1;
+        }
+    }
+
+    &__title {
+        font-family: $font-heading;
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 500;
+        color: $moss;
+        margin-bottom: $space-lg;
+    }
+
+    &__text {
+        p {
+            font-family: $font-body;
+            font-size: 16px;
+            line-height: 1.8;
+            color: rgba(44, 62, 46, 0.85);
+            margin-bottom: $space-md;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    &__image {
+        order: 1;
+        border-radius: $radius-md;
+        overflow: hidden;
+
+        @media (min-width: 768px) {
+            order: 2;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
+        }
+    }
+}
